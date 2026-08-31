@@ -5,21 +5,17 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
-
 const dataDir = path.join(__dirname, 'data');
 const uploadDir = path.join(__dirname, 'uploads');
 const signedDir = path.join(__dirname, 'signed');
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 if (!fs.existsSync(signedDir)) fs.mkdirSync(signedDir, { recursive: true });
-
 const db = new Database(path.join(dataDir, 'sign.db'));
 db.pragma('journal_mode = WAL');
-
 db.exec(`
   CREATE TABLE IF NOT EXISTS sign_tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,12 +38,10 @@ db.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
@@ -57,7 +51,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 200 * 1024 * 1024 } });
 
-// 签名 API
 app.post('/api/sign', upload.fields([
   { name: 'p12', maxCount: 1 },
   { name: 'mobileprovision', maxCount: 1 },
@@ -67,15 +60,12 @@ app.post('/api/sign', upload.fields([
   const p12File = req.files['p12'] ? req.files['p12'][0] : null;
   const mpFile = req.files['mobileprovision'] ? req.files['mobileprovision'][0] : null;
   const ipaFile = req.files['ipa'] ? req.files['ipa'][0] : null;
-
   if (!p12File) return res.json({ success: false, message: '请上传 P12 证书文件' });
   if (!mpFile) return res.json({ success: false, message: '请上传描述文件' });
   if (!password) return res.json({ success: false, message: '请输入 P12 证书密码' });
-
   const taskId = crypto.randomBytes(8).toString('hex');
   db.prepare(`INSERT INTO sign_tasks (task_id, p12_file, mp_file, ipa_file, status) VALUES (?, ?, ?, ?, 'processing')`)
     .run(taskId, p12File.filename, mpFile.filename, ipaFile ? ipaFile.filename : '');
-
   executeSign(taskId, p12File.filename, mpFile.filename, ipaFile ? ipaFile.filename : null, password)
     .then(outputFile => {
       db.prepare(`UPDATE sign_tasks SET status = 'done', output_file = ?, completed_at = CURRENT_TIMESTAMP WHERE task_id = ?`)
@@ -85,7 +75,6 @@ app.post('/api/sign', upload.fields([
       db.prepare(`UPDATE sign_tasks SET status = 'failed', error_msg = ?, completed_at = CURRENT_TIMESTAMP WHERE task_id = ?`)
         .run(err.message, taskId);
     });
-
   res.json({ success: true, message: '签名任务已提交，正在处理...', task_id: taskId, download_url: `/api/sign/download/${taskId}` });
 });
 
@@ -105,11 +94,6 @@ app.get('/api/sign/download/:taskId', (req, res) => {
 
 async function executeSign(taskId, p12Name, mpName, ipaName, password) {
   return new Promise((resolve, reject) => {
-    // 接入真实签名工具示例（zsign）：
-    // const { exec } = require('child_process');
-    // const cmd = `zsign -k ${path.join(uploadDir, p12Name)} -m ${path.join(uploadDir, mpName)} -p ${password} -o ${path.join(signedDir, taskId + '.ipa')} ${path.join(uploadDir, ipaName)}`;
-    // exec(cmd, (error, stdout, stderr) => { if (error) reject(error); else resolve(taskId + '.ipa'); });
-
     setTimeout(() => {
       let outputFile = '';
       if (ipaName) {
@@ -126,7 +110,6 @@ async function executeSign(taskId, p12Name, mpName, ipaName, password) {
   });
 }
 
-// UDID 获取
 app.get('/api/udid/profile', (req, res) => {
   const host = req.headers.host;
   const protocol = req.headers['x-forwarded-proto'] || req.protocol;
@@ -161,23 +144,22 @@ app.post('/api/udid/callback', (req, res) => {
   req.on('end', () => {
     try {
       const udidMatch = body.match(/<key>UDID<\/key>\s*<string>([^<]+)<\/string>/);
+      const productMatch = body.match(/<key>PRODUCT<\/key>\s*<string>([^<]+)<\/string>/);
+      const modelMatch = body.match(/<key>MODEL<\/key>\s*<string>([^<]+)<\/string>/);
+      const versionMatch = body.match(/<key>VERSION<\/key>\s*<string>([^<]+)<\/string>/);
       if (udidMatch) {
         const udid = udidMatch[1];
-        db.prepare('INSERT OR IGNORE INTO devices (udid) VALUES (?)').run(udid);
+        const product = productMatch ? productMatch[1] : '';
+        const model = modelMatch ? modelMatch[1] : '';
+        const version = versionMatch ? versionMatch[1] : '';
+        db.prepare(`INSERT INTO devices (udid, product, model, version) VALUES (?, ?, ?, ?)
+          ON CONFLICT(udid) DO UPDATE SET product = excluded.product, model = excluded.model, version = excluded.version`).run(udid, product, model, version);
         res.redirect(301, `/?udid=${encodeURIComponent(udid)}`);
       } else { res.status(400).send('无法获取UDID'); }
     } catch (e) { res.status(500).send('解析失败'); }
   });
 });
 
-// 安装包下载
-app.get('/api/download/esign', (req, res) => {
-  const filePath = path.join(__dirname, 'downloads', 'esign_5.0.2_signed.ipa');
-  if (!fs.existsSync(filePath)) return res.status(404).send('安装包不存在，请联系管理员');
-  res.download(filePath, 'esign_5.0.2_signed.ipa');
-});
-
-// 管理后台
 function authAdmin(req, res, next) {
   const password = req.headers['x-admin-password'] || req.query.password;
   if (password !== ADMIN_PASSWORD) return res.status(401).json({ success: false, message: '管理员密码错误' });
@@ -207,7 +189,12 @@ app.delete('/api/admin/tasks/:id', authAdmin, (req, res) => {
   res.json({ success: true, message: '删除成功' });
 });
 
-// 页面路由
+app.get('/api/download/esign', (req, res) => {
+  const filePath = path.join(__dirname, 'downloads', 'esign_5.0.2_signed.ipa');
+  if (!fs.existsSync(filePath)) return res.status(404).send('安装包不存在，请联系管理员');
+  res.download(filePath, 'esign_5.0.2_signed.ipa');
+});
+
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
