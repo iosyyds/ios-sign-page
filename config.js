@@ -8,7 +8,7 @@
 // 部署 Cloudflare Workers 后，把地址填在这里，例如：
 //   window.UDID_WORKER_URL = 'https://udid-getter.yourname.workers.dev';
 // 部署教程见 README.md
-window.UDID_WORKER_URL = '';
+window.UDID_WORKER_URL = 'https://ios.yellowjiba.workers.dev';
 
 // ====== 后端 API 地址（可选，不需要后台功能可留空）======
 // 如果你部署了 Node.js 后端（Render/服务器），把地址填在这里
