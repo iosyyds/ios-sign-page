@@ -1,7 +1,7 @@
 {
   "name": "ios-sign-page",
-  "version": "1.0.0",
-  "description": "iOS签名工具全栈应用 - UDID获取、兑换码、安装记录、自助安装、管理后台",
+  "version": "2.0.0",
+  "description": "轻松签 - iOS证书自签工具，Soft UI风格",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
