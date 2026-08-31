@@ -6,206 +6,78 @@
 <title>全能签官方客户端</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: #f0f2f5;
-    color: #333;
-    min-height: 100vh;
-  }
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  .header {
-    background: #fff;
-    border-radius: 8px;
-    padding: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  }
-  .logo {
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(135deg, #e53935, #b71c1c);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+  .header { background: #fff; border-radius: 8px; padding: 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .logo { width: 56px; height: 56px; background: linear-gradient(135deg, #e53935, #b71c1c); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .logo svg { width: 32px; height: 32px; }
-  .header-info h1 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 4px;
-  }
+  .header-info h1 { font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
   .header-info h1 .sep { color: #999; margin: 0 6px; font-weight: 400; }
-  .header-info h1 .sub { color: #1a1a1a; font-weight: 600; }
-  .header-info p {
-    font-size: 13px;
-    color: #888;
-    line-height: 1.5;
-  }
-  .main-card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 40px 32px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    position: relative;
-  }
-  .install-btn-wrap {
-    text-align: center;
-    margin-bottom: 28px;
-  }
-  .btn-install {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #1a1a1a;
-    color: #fff;
-    border: none;
-    padding: 12px 32px;
-    border-radius: 24px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .header-info p { font-size: 13px; color: #888; line-height: 1.5; }
+  .main-card { background: #fff; border-radius: 8px; padding: 40px 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); position: relative; }
+  .device-bar { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 6px; padding: 10px 16px; margin-bottom: 20px; font-size: 13px; color: #2e7d32; display: none; }
+  .device-bar.show { display: block; }
+  .device-bar strong { color: #1b5e20; }
+  .install-btn-wrap { text-align: center; margin-bottom: 28px; }
+  .btn-install { display: inline-flex; align-items: center; gap: 8px; background: #1a1a1a; color: #fff; border: none; padding: 12px 32px; border-radius: 24px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
   .btn-install:hover { background: #333; transform: translateY(-1px); }
+  .btn-install:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
   .btn-install .divider { color: #666; margin: 0 4px; }
   .btn-install .pro { color: #bbb; }
-  .steps-bar {
-    background: #e8f4fd;
-    border-radius: 6px;
-    padding: 14px 20px;
-    text-align: center;
-    margin-bottom: 24px;
-    font-size: 14px;
-  }
+  .steps-bar { background: #e8f4fd; border-radius: 6px; padding: 14px 20px; text-align: center; margin-bottom: 24px; font-size: 14px; }
   .steps-bar .label { color: #333; font-weight: 500; }
-  .steps-bar .step1 { color: #d32f2f; font-weight: 600; }
-  .steps-bar .step2 { color: #d32f2f; font-weight: 600; }
-  .action-btns {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  .btn-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #f5f5f5;
-    color: #555;
-    border: 1px solid #ddd;
-    padding: 6px 16px;
-    border-radius: 16px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .steps-bar .step1, .steps-bar .step2 { color: #d32f2f; font-weight: 600; }
+  .action-btns { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .btn-action { display: inline-flex; align-items: center; gap: 6px; background: #f5f5f5; color: #555; border: 1px solid #ddd; padding: 6px 16px; border-radius: 16px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
   .btn-action:hover { background: #e8e8e8; border-color: #ccc; }
   .btn-action .star { color: #888; }
-  .input-section {
-    margin-bottom: 24px;
-  }
-  .udid-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
+  .input-section { margin-bottom: 16px; }
+  .udid-input { width: 100%; padding: 12px 16px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: monospace; }
   .udid-input:focus { border-color: #2196f3; box-shadow: 0 0 0 2px rgba(33,150,243,0.15); }
   .udid-input::placeholder { color: #aaa; }
-  .self-install-wrap {
-    text-align: center;
-    margin-bottom: 32px;
-  }
-  .btn-self {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #fff;
-    color: #1a1a1a;
-    border: 2px solid #1a1a1a;
-    padding: 10px 28px;
-    border-radius: 22px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .code-section { margin-bottom: 20px; display: none; }
+  .code-section.show { display: block; }
+  .code-input { width: 100%; padding: 10px 16px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; text-transform: uppercase; letter-spacing: 2px; }
+  .code-input:focus { border-color: #ff9800; }
+  .code-hint { font-size: 12px; color: #999; margin-top: 6px; }
+  .self-install-wrap { text-align: center; margin-bottom: 32px; }
+  .btn-self { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #1a1a1a; border: 2px solid #1a1a1a; padding: 10px 28px; border-radius: 22px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
   .btn-self:hover { background: #1a1a1a; color: #fff; }
   .btn-self .divider { color: #999; }
   .btn-self:hover .divider { color: #666; }
-  .footer {
-    text-align: center;
-    padding: 20px 0;
-    font-size: 12px;
-    color: #999;
-    line-height: 1.8;
-  }
-  .footer a { color: #2196f3; text-decoration: none; }
-  .footer a:hover { text-decoration: underline; }
-  .float-menu {
-    position: fixed;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    z-index: 100;
-  }
-  .float-item {
-    background: #f5f5f5;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    padding: 8px 10px;
-    font-size: 12px;
-    color: #666;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .float-item:hover { background: #e8f4fd; color: #2196f3; border-color: #2196f3; }
-  .float-item .arrow { color: #bbb; font-size: 10px; }
-  .float-item.active { background: #e8f4fd; color: #d32f2f; border-color: #d32f2f; }
-  .toast {
-    position: fixed;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.8);
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 6px;
-    font-size: 14px;
-    z-index: 9999;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-  }
+  .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 12px 24px; border-radius: 6px; font-size: 14px; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; max-width: 90%; text-align: center; }
   .toast.show { opacity: 1; }
-  @media (max-width: 768px) {
-    .container { padding: 10px; }
-    .header { padding: 16px; flex-direction: column; text-align: center; }
-    .main-card { padding: 24px 16px; }
-    .float-menu { display: none; }
-    .action-btns { gap: 8px; }
-  }
+  .toast.success { background: rgba(46,125,50,0.9); }
+  .toast.error { background: rgba(211,47,47,0.9); }
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: #fff; border-radius: 10px; padding: 28px; width: 90%; max-width: 480px; max-height: 85vh; overflow-y: auto; }
+  .modal h3 { font-size: 18px; margin-bottom: 20px; color: #1a1a1a; }
+  .modal .form-group { margin-bottom: 16px; }
+  .modal label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 500; }
+  .modal input[type="text"], .modal input[type="password"] { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; outline: none; }
+  .modal input[type="file"] { width: 100%; padding: 8px; border: 1px dashed #ddd; border-radius: 6px; font-size: 13px; }
+  .modal input:focus { border-color: #2196f3; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+  .btn-primary { flex: 1; padding: 10px; background: #1a1a1a; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+  .btn-primary:hover { background: #333; }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-cancel { flex: 1; padding: 10px; background: #f5f5f5; color: #555; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+  .btn-cancel:hover { background: #e8e8e8; }
+  .history-list { margin-top: 12px; }
+  .history-item { padding: 10px 12px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; font-size: 13px; }
+  .history-item .row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .history-item .app-name { font-weight: 600; color: #1a1a1a; }
+  .history-item .status { font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+  .status.pending { background: #fff3e0; color: #e65100; }
+  .status.processing { background: #e3f2fd; color: #1565c0; }
+  .status.done { background: #e8f5e9; color: #2e7d32; }
+  .status.failed { background: #ffebee; color: #c62828; }
+  .history-item .time { color: #999; font-size: 12px; }
+  .history-empty { text-align: center; color: #999; padding: 20px; font-size: 13px; }
+  .loading { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 768px) { .container { padding: 10px; } .header { padding: 16px; flex-direction: column; text-align: center; } .main-card { padding: 24px 16px; } .action-btns { gap: 8px; } }
 </style>
 </head>
 <body>
@@ -218,78 +90,195 @@
       </svg>
     </div>
     <div class="header-info">
-      <h1>全能签<span class="sep">|</span><span class="sub">iOS签名工具</span></h1>
+      <h1>全能签<span class="sep">|</span>iOS签名工具</h1>
       <p>简介：全能签是一款iOS免费的签名工具，可签名安装未上架 App Store 内测应用程序，严禁签名外挂和违规应用。</p>
     </div>
   </div>
   <div class="main-card">
+    <div class="device-bar" id="deviceBar"><strong>已识别设备：</strong><span id="deviceInfo"></span></div>
     <div class="install-btn-wrap">
-      <button class="btn-install" onclick="handleInstall()">
+      <button class="btn-install" id="installBtn" onclick="handleInstall()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-        立即安装
+        <span id="installBtnText">立即安装</span>
         <span class="divider">|</span>
         <span class="pro">专业版</span>
       </button>
     </div>
     <div class="steps-bar">
       <span class="label">安装步骤：</span>
-      <span class="step1">第一步【获取设备UDID】</span>
-      <br>
+      <span class="step1">第一步【获取设备UDID】</span><br>
       <span class="step2">第二步【输入兑换码】</span>
     </div>
     <div class="action-btns">
       <button class="btn-action" onclick="handleGetUDID()">获取UDID</button>
-      <button class="btn-action" onclick="handleBuyCode()">
-        <span class="star">★</span>购买证书兑换码<span class="star">★</span>
-      </button>
+      <button class="btn-action" onclick="handleBuyCode()"><span class="star">★</span>购买证书兑换码<span class="star">★</span></button>
       <button class="btn-action" onclick="handleHistory()">历史查询</button>
     </div>
     <div class="input-section">
       <input type="text" class="udid-input" id="udidInput" placeholder="请输入安装的设备UDID" maxlength="40">
     </div>
-    <div class="self-install-wrap">
-      <button class="btn-self" onclick="handleSelfInstall()">
-        我有证书<span class="divider">|</span>自助安装
-      </button>
+    <div class="code-section" id="codeSection">
+      <input type="text" class="code-input" id="codeInput" placeholder="请输入兑换码（选填，专业版需要）" maxlength="32">
+      <div class="code-hint">没有兑换码可直接免费安装，专业版功能需要兑换码</div>
     </div>
-    <div class="footer">
-      <div><a href="javascript:void(0)">无锡诺思客信息技术有限公司</a></div>
-      <div>备案号：苏ICP备19018114号-1</div>
-      <div>APP备：苏ICP备19018114号-3A</div>
-      <div>苏公网安备32020602001498</div>
+    <div class="self-install-wrap">
+      <button class="btn-self" onclick="openSelfInstallModal()">我有证书<span class="divider">|</span>自助安装</button>
     </div>
   </div>
 </div>
-<div class="float-menu">
-  <div class="float-item" onclick="showToast('返回全能签官网')"><span class="arrow">▸</span>返回全能签官网</div>
-  <div class="float-item" onclick="showToast('视频安装教程')"><span class="arrow">▸</span>视频安装教程</div>
-  <div class="float-item" onclick="showToast('联系客服')"><span class="arrow">▸</span>联系客服</div>
-  <div class="float-item active" onclick="showToast('苹果开发者模式')"><span class="arrow">▸</span>苹果开发者模式</div>
+
+<div class="modal-overlay" id="selfInstallModal">
+  <div class="modal">
+    <h3>自助安装 - 上传证书</h3>
+    <div class="form-group"><label>设备UDID</label><input type="text" id="selfUdid" placeholder="请输入设备UDID"></div>
+    <div class="form-group"><label>证书名称（选填）</label><input type="text" id="selfCertName" placeholder="例如：我的开发者证书"></div>
+    <div class="form-group"><label>P12证书文件（.p12）*</label><input type="file" id="selfP12" accept=".p12"></div>
+    <div class="form-group"><label>描述文件（.mobileprovision）*</label><input type="file" id="selfMp" accept=".mobileprovision"></div>
+    <div class="form-group"><label>IPA安装包（选填）</label><input type="file" id="selfIpa" accept=".ipa"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeSelfInstallModal()">取消</button>
+      <button class="btn-primary" id="selfSubmitBtn" onclick="handleSelfInstall()">开始签名</button>
+    </div>
+  </div>
 </div>
+
+<div class="modal-overlay" id="historyModal">
+  <div class="modal">
+    <h3>安装记录查询</h3>
+    <div class="form-group"><label>设备UDID</label><input type="text" id="historyUdid" placeholder="请输入设备UDID查询"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeHistoryModal()">关闭</button>
+      <button class="btn-primary" onclick="queryHistory()">查询</button>
+    </div>
+    <div class="history-list" id="historyList" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="buyModal">
+  <div class="modal">
+    <h3>购买证书兑换码</h3>
+    <p style="font-size:14px;color:#666;line-height:1.8;margin-bottom:16px;">兑换码用于解锁专业版功能，支持更多应用签名和更长有效期。<br><br>请联系管理员获取兑换码，或在管理后台自行生成。</p>
+    <div class="form-group"><label>已有兑换码？直接输入</label><input type="text" id="buyCodeInput" placeholder="输入兑换码后点击使用" style="text-transform:uppercase;letter-spacing:2px;"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeBuyModal()">关闭</button>
+      <button class="btn-primary" onclick="useBuyCode()">使用兑换码</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
+
 <script>
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
-  }
-  function handleInstall() {
-    const udid = document.getElementById('udidInput').value.trim();
-    if (!udid) { showToast('请先输入设备UDID'); return; }
-    showToast('正在准备安装，请稍候...');
-  }
-  function handleGetUDID() { showToast('请使用Safari浏览器打开描述文件获取UDID'); }
-  function handleBuyCode() { showToast('即将跳转到购买页面...'); }
-  function handleHistory() { showToast('请输入UDID查询安装记录'); }
-  function handleSelfInstall() {
-    const udid = document.getElementById('udidInput').value.trim();
-    if (!udid) { showToast('请先输入设备UDID'); return; }
-    showToast('正在进入自助安装流程...');
-  }
-  document.getElementById('udidInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') handleInstall();
+  const API = '';
+  function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 2500); }
+  function getUDID() { return document.getElementById('udidInput').value.trim(); }
+  function setLoading(btn, text, loading = true) { if (loading) { btn.disabled = true; btn.innerHTML = '<span class="loading"></span> ' + text; } else { btn.disabled = false; } }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const urlUdid = params.get('udid');
+    if (urlUdid) { document.getElementById('udidInput').value = urlUdid; checkDevice(urlUdid); history.replaceState({}, '', window.location.pathname); }
+    document.getElementById('udidInput').addEventListener('input', function() {
+      const codeSection = document.getElementById('codeSection');
+      if (this.value.trim().length > 5) codeSection.classList.add('show'); else codeSection.classList.remove('show');
+    });
+    document.getElementById('udidInput').addEventListener('keypress', e => { if (e.key === 'Enter') handleInstall(); });
   });
+
+  async function checkDevice(udid) {
+    try {
+      const res = await fetch(`${API}/api/udid/check?udid=${encodeURIComponent(udid)}`);
+      const data = await res.json();
+      if (data.success && data.exists) {
+        const d = data.device;
+        const info = `${d.udid.substring(0,8)}...${d.udid.substring(d.udid.length-4)}` + (d.product ? ` · ${d.product}` : '') + (d.model ? ` · ${d.model}` : '');
+        document.getElementById('deviceInfo').textContent = info;
+        document.getElementById('deviceBar').classList.add('show');
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  function handleGetUDID() { showToast('正在下载描述文件，请用Safari打开并安装...', 'success'); setTimeout(() => { window.location.href = `${API}/api/udid/profile`; }, 800); }
+  function handleBuyCode() { document.getElementById('buyModal').classList.add('show'); }
+  function closeBuyModal() { document.getElementById('buyModal').classList.remove('show'); }
+
+  async function useBuyCode() {
+    const code = document.getElementById('buyCodeInput').value.trim();
+    const udid = getUDID();
+    if (!code) return showToast('请输入兑换码', 'error');
+    if (!udid) return showToast('请先输入设备UDID', 'error');
+    try {
+      const res = await fetch(`${API}/api/code/use`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, udid, app_name: '专业版应用' }) });
+      const data = await res.json();
+      if (data.success) { showToast(data.message, 'success'); closeBuyModal(); document.getElementById('codeInput').value = code; }
+      else showToast(data.message, 'error');
+    } catch(e) { showToast('网络错误，请重试', 'error'); }
+  }
+
+  function handleHistory() { const udid = getUDID(); if (udid) document.getElementById('historyUdid').value = udid; document.getElementById('historyModal').classList.add('show'); if (udid) queryHistory(); }
+  function closeHistoryModal() { document.getElementById('historyModal').classList.remove('show'); }
+
+  async function queryHistory() {
+    const udid = document.getElementById('historyUdid').value.trim();
+    if (!udid) return showToast('请输入UDID', 'error');
+    const list = document.getElementById('historyList');
+    list.innerHTML = '<div style="text-align:center;padding:16px;color:#999;">查询中...</div>';
+    try {
+      const res = await fetch(`${API}/api/history?udid=${encodeURIComponent(udid)}`);
+      const data = await res.json();
+      if (data.success && data.records.length > 0) {
+        list.innerHTML = data.records.map(r => `<div class="history-item"><div class="row"><span class="app-name">${r.app_name || '未命名应用'}</span><span class="status ${r.status}">${statusText(r.status)}</span></div><div class="row"><span class="time">${r.created_at}</span><span class="time" style="color:#aaa;">${r.code ? '兑换码: ' + r.code : '免费安装'}</span></div></div>`).join('');
+      } else list.innerHTML = '<div class="history-empty">暂无安装记录</div>';
+    } catch(e) { list.innerHTML = '<div class="history-empty">查询失败，请重试</div>'; }
+  }
+  function statusText(s) { const map = { pending: '等待中', processing: '处理中', done: '已完成', failed: '失败' }; return map[s] || s; }
+
+  async function handleInstall() {
+    const udid = getUDID();
+    const code = document.getElementById('codeInput').value.trim();
+    const btn = document.getElementById('installBtn');
+    if (!udid) return showToast('请先输入设备UDID', 'error');
+    setLoading(btn, '安装中...', true);
+    try {
+      const res = await fetch(`${API}/api/install`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ udid, code }) });
+      const data = await res.json();
+      if (data.success) { showToast(data.message, 'success'); checkDevice(udid); }
+      else showToast(data.message, 'error');
+    } catch(e) { showToast('网络错误，请确认服务已启动', 'error'); }
+    finally {
+      setLoading(btn, '', false);
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span id="installBtnText">立即安装</span><span class="divider">|</span><span class="pro">专业版</span>`;
+    }
+  }
+
+  function openSelfInstallModal() { const udid = getUDID(); if (udid) document.getElementById('selfUdid').value = udid; document.getElementById('selfInstallModal').classList.add('show'); }
+  function closeSelfInstallModal() { document.getElementById('selfInstallModal').classList.remove('show'); }
+
+  async function handleSelfInstall() {
+    const udid = document.getElementById('selfUdid').value.trim();
+    const certName = document.getElementById('selfCertName').value.trim();
+    const p12 = document.getElementById('selfP12').files[0];
+    const mp = document.getElementById('selfMp').files[0];
+    const ipa = document.getElementById('selfIpa').files[0];
+    const btn = document.getElementById('selfSubmitBtn');
+    if (!udid) return showToast('请输入设备UDID', 'error');
+    if (!p12) return showToast('请上传P12证书', 'error');
+    if (!mp) return showToast('请上传描述文件', 'error');
+    const formData = new FormData();
+    formData.append('udid', udid); formData.append('cert_name', certName);
+    formData.append('p12', p12); formData.append('mobileprovision', mp);
+    if (ipa) formData.append('ipa', ipa);
+    setLoading(btn, '签名中...', true);
+    try {
+      const res = await fetch(`${API}/api/self-install`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) { showToast(data.message, 'success'); closeSelfInstallModal(); checkDevice(udid); }
+      else showToast(data.message, 'error');
+    } catch(e) { showToast('上传失败，请确认服务已启动', 'error'); }
+    finally { setLoading(btn, '', false); btn.textContent = '开始签名'; }
+  }
+
+  document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); }); });
 </script>
 </body>
 </html>
