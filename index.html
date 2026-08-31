@@ -3,334 +3,433 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>轻松签 - 证书自签工具</title>
+<title>轻松签 - iOS证书自签工具 | P12证书在线签名安装</title>
+<meta name="description" content="轻松签是一款简单、快速、安全的iOS证书自签工具，支持P12证书在线签名、描述文件重签、IPA安装包签名，支持iOS 11 - iOS 18+设备，无需电脑一键完成签名安装。">
+<meta name="keywords" content="轻松签,iOS签名,P12证书,证书自签,IPA签名,描述文件,苹果签名,企业证书,UDID获取,在线签名">
+<meta name="author" content="轻松签">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://sign.p12z.com/sign">
+<meta property="og:type" content="website">
+<meta property="og:title" content="轻松签 - iOS证书自签工具">
+<meta property="og:description" content="使用自己的P12证书在线签名安装，简单、快速、安全，支持iOS 11 - iOS 18+">
+<meta property="og:image" content="/assets/logo.png">
+<meta property="og:url" content="https://sign.p12z.com/sign">
+<meta property="og:site_name" content="轻松签">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="轻松签 - iOS证书自签工具">
+<meta name="twitter:description" content="使用自己的P12证书在线签名安装，简单、快速、安全">
+<meta name="twitter:image" content="/assets/logo.png">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"轻松签","description":"iOS证书自签工具，支持P12证书在线签名安装","applicationCategory":"UtilityApplication","operatingSystem":"iOS 11+","softwareVersion":"5.0.2","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"1256"}}
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
-  .upload-zone { transition: all 0.3s ease; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif; -webkit-font-smoothing: antialiased; }
+  .upload-zone { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
   .upload-zone.dragover { background: #eef2ff; border-color: #818cf8; transform: scale(1.01); }
+  .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+  .gradient-text { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .bg-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; pointer-events: none; }
+  .feature-card:hover .feature-icon { transform: scale(1.1) rotate(-5deg); }
+  .feature-icon { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .float-anim { animation: float 4s ease-in-out infinite; }
+  @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); } 70% { box-shadow: 0 0 0 12px rgba(99,102,241,0); } 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); } }
+  .pulse-ring { animation: pulse-ring 2s infinite; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 </style>
 </head>
-<body class="bg-slate-50 text-gray-800 min-h-screen">
-
-<nav class="bg-white/80 backdrop-blur-sm border-0 border-transparent px-4 md:px-6 lg:px-8 py-4 sticky top-0 z-50 shadow-sm">
-  <div class="flex items-center justify-between max-w-6xl mx-auto gap-6 md:gap-8">
-    <a href="/" class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+<body class="bg-slate-50 text-gray-800 min-h-screen overflow-x-hidden">
+<div id="wechatMask" class="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm hidden flex-col items-center justify-start pt-16 px-8">
+  <div class="w-full max-w-sm">
+    <div class="flex justify-end mb-4">
+      <div class="relative">
+        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+        </div>
+        <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-lg">1</div>
       </div>
-      <span class="font-semibold text-xl md:text-2xl text-gray-800">轻松签</span>
+    </div>
+    <div class="bg-white rounded-3xl shadow-2xl p-8 text-center">
+      <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center mx-auto mb-5 shadow-xl shadow-indigo-500/30">
+        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <h2 class="text-xl font-bold text-gray-800 mb-2">请在 Safari 中打开</h2>
+      <p class="text-sm text-gray-500 mb-5 leading-relaxed">微信内置浏览器不支持安装描述文件和签名应用<br>请使用 iOS 默认浏览器 Safari 打开本页面</p>
+      <div class="bg-indigo-50 rounded-2xl p-4 mb-5 text-left">
+        <p class="text-xs text-indigo-700 font-medium mb-2">操作步骤：</p>
+        <ol class="text-xs text-indigo-600/80 space-y-1.5">
+          <li class="flex gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">1</span><span>点击右上角 <strong>···</strong> 按钮</span></li>
+          <li class="flex gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">2</span><span>选择「在 Safari 中打开」</span></li>
+          <li class="flex gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">3</span><span>在 Safari 中正常使用签名功能</span></li>
+        </ol>
+      </div>
+      <button onclick="copyAndTip()" class="w-full px-5 py-3 rounded-2xl font-medium bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm active:scale-95 transition-all">复制链接，去 Safari 打开</button>
+      <p class="text-xs text-gray-400 mt-3">复制后打开 Safari，粘贴到地址栏访问</p>
+    </div>
+  </div>
+</div>
+<div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+  <div class="bg-blob w-96 h-96 bg-indigo-300 top-[-100px] left-[-100px]"></div>
+  <div class="bg-blob w-80 h-80 bg-purple-300 top-[30%] right-[-80px]"></div>
+  <div class="bg-blob w-72 h-72 bg-pink-200 bottom-[10%] left-[10%]"></div>
+</div>
+<nav class="glass-card border-0 border-transparent px-4 md:px-6 lg:px-8 py-3.5 sticky top-0 z-50 shadow-sm">
+  <div class="flex items-center justify-between max-w-6xl mx-auto gap-4">
+    <a href="/" class="flex items-center gap-2.5 group">
+      <img src="/assets/logo.png" alt="轻松签 Logo" class="w-9 h-9 rounded-xl shadow-md shadow-indigo-500/20 group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300">
+      <span class="font-semibold text-lg md:text-xl text-gray-800">轻松签</span>
     </a>
-    <div class="hidden md:flex gap-6 md:gap-8 font-normal text-sm text-gray-500">
-      <a href="/" class="hover:text-indigo-600 transition-colors">首页</a>
-      <a href="/" class="text-indigo-600 font-medium">签名</a>
-      <a href="#" class="hover:text-indigo-600 transition-colors">签名教程</a>
-      <a href="#" class="hover:text-indigo-600 transition-colors">常见问题</a>
+    <div class="hidden md:flex items-center gap-1 lg:gap-2 font-normal text-sm text-gray-500">
+      <a href="/" class="px-3.5 py-2 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200">首页</a>
+      <a href="/#sign" class="px-3.5 py-2 rounded-xl bg-indigo-50 text-indigo-600 font-medium">签名</a>
+      <a href="/tutorial.html" class="px-3.5 py-2 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200">签名教程</a>
+      <a href="/faq.html" class="px-3.5 py-2 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200">常见问题</a>
+      <a href="/#udid" class="px-3.5 py-2 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200">获取UDID</a>
+    </div>
+    <button id="mobileMenuBtn" class="md:hidden w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600" onclick="toggleMobileMenu()">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden mt-3 pt-3 border-t border-gray-100">
+    <div class="flex flex-col gap-1 text-sm">
+      <a href="/" class="px-4 py-2.5 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 text-gray-600">首页</a>
+      <a href="/#sign" class="px-4 py-2.5 rounded-xl bg-indigo-50 text-indigo-600 font-medium">签名</a>
+      <a href="/tutorial.html" class="px-4 py-2.5 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 text-gray-600">签名教程</a>
+      <a href="/faq.html" class="px-4 py-2.5 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 text-gray-600">常见问题</a>
+      <a href="/#udid" class="px-4 py-2.5 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 text-gray-600">获取UDID</a>
     </div>
   </div>
 </nav>
-
-<section class="py-12 md:py-16 px-4 md:px-6 lg:px-8">
-  <div class="max-w-4xl mx-auto text-center">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium mb-6">
-      <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+<section class="py-14 md:py-20 px-4 md:px-6 lg:px-8 relative">
+  <div class="max-w-4xl mx-auto text-center relative z-10">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm text-indigo-600 text-xs font-medium mb-6 shadow-md shadow-indigo-100/50 border border-indigo-100/50">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
       版本 5.0.2 · 支持 iOS 11 - iOS 18+
     </div>
-    <h1 class="font-semibold text-4xl md:text-5xl lg:text-6xl text-gray-800 mb-4 leading-tight">轻松签 · 证书自签</h1>
-    <p class="font-normal text-sm md:text-base text-gray-500 max-w-xl mx-auto mb-8 leading-relaxed">使用自己的 P12 证书在线签名安装，简单、快速、安全</p>
-    <div class="flex flex-wrap justify-center gap-4">
-      <button class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm">证书购买</button>
-      <button class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm">定制教程</button>
-      <button class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm">软件源</button>
-      <button class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm">交流群</button>
+    <h1 class="font-bold text-4xl md:text-5xl lg:text-6xl text-gray-800 mb-5 leading-tight tracking-tight">
+      轻松签 · <span class="gradient-text">证书自签</span>
+    </h1>
+    <p class="font-normal text-base md:text-lg text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed">
+      使用自己的 P12 证书在线签名安装，简单、快速、安全<br class="hidden md:block">无需电脑，Safari 一键完成签名
+    </p>
+    <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+      <a href="https://puaaa.cn/shop/10.html" target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm flex items-center gap-2 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        购买证书
+      </a>
+      <a href="/tutorial.html" class="px-6 py-3.5 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm flex items-center gap-2 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        签名教程
+      </a>
+      <a href="/#udid" class="px-6 py-3.5 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm flex items-center gap-2 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+        获取UDID
+      </a>
+      <a href="/faq.html" class="px-6 py-3.5 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm flex items-center gap-2 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        常见问题
+      </a>
     </div>
   </div>
 </section>
-
-<section class="pb-8 md:pb-12 px-4 md:px-6 lg:px-8">
+<section class="pb-10 md:pb-14 px-4 md:px-6 lg:px-8">
   <div class="max-w-2xl mx-auto">
-    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8">
-      <div class="flex items-start gap-5">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 flex-shrink-0">
-          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
+      <div class="flex items-start gap-5 relative z-10">
+        <div class="float-anim">
+          <img src="/assets/logo.png" alt="轻松签 App" class="w-16 h-16 md:w-20 md:h-20 rounded-2xl shadow-xl shadow-indigo-500/30">
         </div>
         <div class="flex-1 min-w-0">
-          <h3 class="font-semibold text-xl md:text-2xl text-gray-800 mb-1">轻松签 App</h3>
-          <p class="text-sm text-gray-500 mb-3">iOS 端签名工具安装包 · 版本 5.0.2 · 7.3 MB</p>
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="font-semibold text-xl md:text-2xl text-gray-800">轻松签 App</h3>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium">v5.0.2</span>
+          </div>
+          <p class="text-sm text-gray-500 mb-4">iOS 端签名工具安装包 · 7.3 MB · 支持 iOS 11+</p>
           <div class="flex flex-wrap gap-3">
-            <a href="/api/download/esign" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm inline-flex items-center gap-2">
+            <a href="/api/download/esign" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm inline-flex items-center gap-2 active:scale-95">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               下载安装包
             </a>
-            <button onclick="showInstallGuide()" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm">安装教程</button>
+            <button onclick="showInstallGuide()" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm active:scale-95">安装教程</button>
           </div>
         </div>
       </div>
-      <div id="installGuide" class="hidden mt-6 pt-6 border-t border-gray-100">
-        <h4 class="font-semibold text-base text-gray-800 mb-4">安装步骤</h4>
-        <ol class="space-y-3 text-sm text-gray-600">
-          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">1</span><span>用 iPhone 的 Safari 浏览器打开本页面，点击「下载安装包」</span></li>
-          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">2</span><span>弹出「此网站正尝试下载一个配置描述文件」，点击「允许」</span></li>
-          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">3</span><span>下载完成后，到「设置 → 通用 → VPN与设备管理」中安装描述文件</span></li>
-          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">4</span><span>安装完成后，回到桌面即可看到「轻松签」App</span></li>
-          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">5</span><span>首次打开如提示「未受信任的企业级开发者」，到「设置 → 通用 → VPN与设备管理」中信任证书</span></li>
+      <div id="installGuide" class="hidden mt-6 pt-6 border-t border-gray-100 relative z-10">
+        <h4 class="font-semibold text-base text-gray-800 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          安装步骤
+        </h4>
+        <ol class="space-y-3">
+          <li class="flex gap-3 items-start"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">1</span><span class="text-sm text-gray-600 leading-relaxed">用 iPhone 的 <strong class="text-gray-800">Safari 浏览器</strong>打开本页面，点击「下载安装包」</span></li>
+          <li class="flex gap-3 items-start"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">2</span><span class="text-sm text-gray-600 leading-relaxed">弹出「此网站正尝试下载一个配置描述文件」，点击「<strong class="text-gray-800">允许</strong>」</span></li>
+          <li class="flex gap-3 items-start"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">3</span><span class="text-sm text-gray-600 leading-relaxed">下载完成后，到「<strong class="text-gray-800">设置 → 通用 → VPN与设备管理</strong>」中安装描述文件</span></li>
+          <li class="flex gap-3 items-start"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">4</span><span class="text-sm text-gray-600 leading-relaxed">安装完成后，回到桌面即可看到「轻松签」App 图标</span></li>
+          <li class="flex gap-3 items-start"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">5</span><span class="text-sm text-gray-600 leading-relaxed">首次打开如提示「未受信任的企业级开发者」，到「设置 → 通用 → VPN与设备管理」中<strong class="text-gray-800">信任证书</strong></span></li>
         </ol>
       </div>
     </div>
   </div>
 </section>
-
-<section class="pb-16 md:pb-24 px-4 md:px-6 lg:px-8">
+<section id="sign" class="pb-12 md:pb-16 px-4 md:px-6 lg:px-8 scroll-mt-20">
   <div class="max-w-2xl mx-auto">
-    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8">
-      <h2 class="font-semibold text-xl md:text-2xl text-gray-800 mb-2">开始签名</h2>
-      <p class="text-sm text-gray-500 mb-8">上传证书文件，输入密码，一键完成签名</p>
-
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-3">P12 证书文件</label>
-        <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="p12Zone" onclick="document.getElementById('p12Input').click()">
-          <input type="file" id="p12Input" accept=".p12" class="hidden" onchange="handleFileSelect(this, 'p12')">
-          <div id="p12Placeholder">
-            <div class="w-14 h-14 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
-            <p class="text-sm font-medium text-gray-700">点击选择 P12 文件</p>
-            <p class="text-xs text-gray-400 mt-1">支持 .p12 格式</p>
-          </div>
-          <div id="p12Selected" class="hidden">
-            <div class="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
-            <p class="text-sm font-medium text-gray-700" id="p12FileName">file.p12</p>
-            <p class="text-xs text-gray-400 mt-1" id="p12FileSize">0 KB</p>
-            <button type="button" class="mt-3 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('p12')">重新选择</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-3">描述文件</label>
-        <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="mpZone" onclick="document.getElementById('mpInput').click()">
-          <input type="file" id="mpInput" accept=".mobileprovision" class="hidden" onchange="handleFileSelect(this, 'mp')">
-          <div id="mpPlaceholder">
-            <div class="w-14 h-14 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
-            <p class="text-sm font-medium text-gray-700">点击选择描述文件</p>
-            <p class="text-xs text-gray-400 mt-1">支持 .mobileprovision 格式</p>
-          </div>
-          <div id="mpSelected" class="hidden">
-            <div class="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
-            <p class="text-sm font-medium text-gray-700" id="mpFileName">file.mobileprovision</p>
-            <p class="text-xs text-gray-400 mt-1" id="mpFileSize">0 KB</p>
-            <button type="button" class="mt-3 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('mp')">重新选择</button>
+    <div class="text-center mb-8">
+      <h2 class="font-bold text-2xl md:text-3xl text-gray-800 mb-2">开始签名</h2>
+      <p class="text-sm md:text-base text-gray-500">上传证书文件，输入密码，一键完成签名</p>
+    </div>
+    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8 relative overflow-hidden">
+      <div class="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-purple-100 to-indigo-100 rounded-full blur-3xl opacity-40 translate-y-1/2 -translate-x-1/2"></div>
+      <div class="relative z-10 space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-3">P12 证书文件 <span class="text-red-400">*</span></label>
+          <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-6 md:p-8 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="p12Zone" onclick="document.getElementById('p12Input').click()">
+            <input type="file" id="p12Input" accept=".p12" class="hidden" onchange="handleFileSelect(this, 'p12')">
+            <div id="p12Placeholder">
+              <div class="w-14 h-14 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
+              <p class="text-sm font-medium text-gray-700">点击选择 P12 文件</p>
+              <p class="text-xs text-gray-400 mt-1">支持 .p12 格式 · 拖拽文件到此处</p>
+            </div>
+            <div id="p12Selected" class="hidden">
+              <div class="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+              <p class="text-sm font-medium text-gray-700 truncate px-4" id="p12FileName">file.p12</p>
+              <p class="text-xs text-gray-400 mt-1" id="p12FileSize">0 KB</p>
+              <button type="button" class="mt-3 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('p12')">重新选择</button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-3">IPA 安装包 <span class="text-gray-400 font-normal ml-1">（选填）</span></label>
-        <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="ipaZone" onclick="document.getElementById('ipaInput').click()">
-          <input type="file" id="ipaInput" accept=".ipa" class="hidden" onchange="handleFileSelect(this, 'ipa')">
-          <div id="ipaPlaceholder">
-            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg></div>
-            <p class="text-sm text-gray-500">点击选择 IPA 文件（可选）</p>
-          </div>
-          <div id="ipaSelected" class="hidden">
-            <div class="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
-            <p class="text-sm font-medium text-gray-700" id="ipaFileName">app.ipa</p>
-            <p class="text-xs text-gray-400 mt-1" id="ipaFileSize">0 KB</p>
-            <button type="button" class="mt-2 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('ipa')">重新选择</button>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-3">描述文件 <span class="text-red-400">*</span></label>
+          <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-6 md:p-8 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="mpZone" onclick="document.getElementById('mpInput').click()">
+            <input type="file" id="mpInput" accept=".mobileprovision" class="hidden" onchange="handleFileSelect(this, 'mp')">
+            <div id="mpPlaceholder">
+              <div class="w-14 h-14 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+              <p class="text-sm font-medium text-gray-700">点击选择描述文件</p>
+              <p class="text-xs text-gray-400 mt-1">支持 .mobileprovision 格式 · 拖拽文件到此处</p>
+            </div>
+            <div id="mpSelected" class="hidden">
+              <div class="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+              <p class="text-sm font-medium text-gray-700 truncate px-4" id="mpFileName">file.mobileprovision</p>
+              <p class="text-xs text-gray-400 mt-1" id="mpFileSize">0 KB</p>
+              <button type="button" class="mt-3 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('mp')">重新选择</button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="mb-8">
-        <label class="block text-sm font-medium text-gray-700 mb-3">P12 证书密码</label>
-        <input type="password" id="p12Password" class="w-full px-5 py-3.5 bg-gray-50 border-0 rounded-2xl focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all duration-200 text-sm" placeholder="请输入 P12 证书密码">
-      </div>
-
-      <button id="signBtn" onclick="handleSign()" class="w-full px-6 py-4 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-base active:scale-95">
-        <span id="signBtnText">立即签名</span>
-      </button>
-
-      <div id="signProgress" class="hidden mt-6">
-        <div class="bg-gray-50 rounded-2xl p-5">
-          <div class="flex items-center justify-between mb-3"><span class="text-sm font-medium text-gray-700" id="progressText">正在签名...</span><span class="text-xs text-gray-400" id="progressPercent">0%</span></div>
-          <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden"><div id="progressBar" class="bg-indigo-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div></div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-3">IPA 安装包 <span class="text-gray-400 font-normal ml-1 text-xs">（选填，不填则签名轻松签）</span></label>
+          <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-5 md:p-6 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="ipaZone" onclick="document.getElementById('ipaInput').click()">
+            <input type="file" id="ipaInput" accept=".ipa" class="hidden" onchange="handleFileSelect(this, 'ipa')">
+            <div id="ipaPlaceholder">
+              <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg></div>
+              <p class="text-sm text-gray-500">点击选择 IPA 文件（可选）</p>
+            </div>
+            <div id="ipaSelected" class="hidden">
+              <div class="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+              <p class="text-sm font-medium text-gray-700 truncate px-4" id="ipaFileName">app.ipa</p>
+              <p class="text-xs text-gray-400 mt-1" id="ipaFileSize">0 KB</p>
+              <button type="button" class="mt-2 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('ipa')">重新选择</button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div id="signResult" class="hidden mt-6">
-        <div class="bg-emerald-50 rounded-2xl p-5 text-center">
-          <div class="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
-          <h3 class="font-semibold text-lg text-gray-800 mb-1">签名完成</h3>
-          <p class="text-sm text-gray-500 mb-4" id="resultMsg">应用已成功签名</p>
-          <button id="downloadBtn" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 text-sm">下载签名后的 IPA</button>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-3">P12 证书密码 <span class="text-red-400">*</span></label>
+          <div class="relative">
+            <input type="password" id="p12Password" class="w-full px-5 py-3.5 bg-gray-50 border-0 rounded-2xl focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all duration-200 text-sm pr-12" placeholder="请输入 P12 证书密码">
+            <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+              <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </button>
+          </div>
+        </div>
+        <button id="signBtn" onclick="handleSign()" class="w-full px-6 py-4 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30 text-base active:scale-[0.98] pulse-ring">
+          <span id="signBtnText" class="flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            立即签名
+          </span>
+        </button>
+        <div id="signProgress" class="hidden">
+          <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-gray-700" id="progressText">正在签名...</span>
+              <span class="text-xs text-indigo-600 font-semibold" id="progressPercent">0%</span>
+            </div>
+            <div class="w-full bg-white/60 rounded-full h-2.5 overflow-hidden">
+              <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+        <div id="signResult" class="hidden">
+          <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 text-center">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4"><svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+            <h3 class="font-semibold text-lg text-gray-800 mb-1">签名完成</h3>
+            <p class="text-sm text-gray-500 mb-5" id="resultMsg">应用已成功签名</p>
+            <button id="downloadBtn" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 text-sm active:scale-95 inline-flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              下载签名后的 IPA
+            </button>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="mt-8 bg-indigo-50/50 rounded-2xl p-5">
-      <h4 class="font-semibold text-sm text-indigo-700 mb-2 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>温馨提示</h4>
+    <div class="mt-6 bg-gradient-to-r from-indigo-50/80 to-purple-50/80 rounded-2xl p-5 border border-indigo-100/50">
+      <h4 class="font-semibold text-sm text-indigo-700 mb-2.5 flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        温馨提示
+      </h4>
       <ul class="text-xs text-indigo-600/80 space-y-1.5 leading-relaxed">
-        <li>· 请确保 P12 证书和描述文件匹配，且描述文件包含目标设备 UDID</li>
-        <li>· 签名过程不会上传你的证书密码到第三方服务器，所有处理均在本地完成</li>
-        <li>· 签名后的 IPA 需要通过 Safari 或 iTunes 安装到 iOS 设备</li>
+        <li class="flex gap-2"><span class="text-indigo-400">·</span>请确保 P12 证书和描述文件匹配，且描述文件包含目标设备 UDID</li>
+        <li class="flex gap-2"><span class="text-indigo-400">·</span>签名过程不会上传你的证书密码到第三方服务器，所有处理均在本地完成</li>
+        <li class="flex gap-2"><span class="text-indigo-400">·</span>签名后的 IPA 需要通过 Safari 或 iTunes 安装到 iOS 设备</li>
+        <li class="flex gap-2"><span class="text-indigo-400">·</span>没有证书？<a href="https://puaaa.cn/shop/10.html" target="_blank" rel="noopener noreferrer" class="text-indigo-600 font-medium underline underline-offset-2 hover:text-indigo-700">点击购买证书</a></li>
       </ul>
     </div>
   </div>
 </section>
-
+<section id="udid" class="pb-12 md:pb-16 px-4 md:px-6 lg:px-8 scroll-mt-20">
+  <div class="max-w-2xl mx-auto">
+    <div class="text-center mb-8">
+      <h2 class="font-bold text-2xl md:text-3xl text-gray-800 mb-2">获取设备 UDID</h2>
+      <p class="text-sm md:text-base text-gray-500">一键获取 iPhone / iPad 设备的唯一标识符</p>
+    </div>
+    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full blur-3xl opacity-40 -translate-y-1/2 translate-x-1/2"></div>
+      <div class="relative z-10">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30 flex-shrink-0">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold text-lg text-gray-800 mb-1">什么是 UDID？</h3>
+            <p class="text-sm text-gray-500 leading-relaxed">UDID（Unique Device Identifier）是 iOS 设备的唯一标识符，用于描述文件中注册设备，使签名后的应用可以安装到指定设备上。</p>
+          </div>
+        </div>
+        <div class="bg-gray-50 rounded-2xl p-4 mb-6">
+          <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">获取步骤</h4>
+          <ol class="space-y-2 text-sm text-gray-600">
+            <li class="flex gap-2.5 items-start"><span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">1</span><span>用 iPhone 的 Safari 浏览器打开本页面</span></li>
+            <li class="flex gap-2.5 items-start"><span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">2</span><span>点击下方「获取 UDID」按钮，允许下载描述文件</span></li>
+            <li class="flex gap-2.5 items-start"><span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">3</span><span>到「设置 → 通用 → VPN与设备管理」中安装描述文件</span></li>
+            <li class="flex gap-2.5 items-start"><span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5">4</span><span>安装后自动跳转回本页面，即可看到你的 UDID</span></li>
+          </ol>
+        </div>
+        <button onclick="getUDID()" class="w-full px-6 py-4 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 text-base active:scale-[0.98] flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          获取我的 UDID
+        </button>
+        <div id="udidResult" class="hidden mt-6">
+          <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center"><svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+              <span class="text-sm font-semibold text-gray-800">获取成功！你的设备 UDID：</span>
+            </div>
+            <div class="bg-white/80 rounded-xl p-3.5 flex items-center justify-between gap-3">
+              <code id="udidValue" class="text-sm font-mono text-indigo-600 break-all select-all">-</code>
+              <button onclick="copyUDID()" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700 transition-colors flex-shrink-0">复制</button>
+            </div>
+            <p class="text-xs text-gray-500 mt-3">请将此 UDID 提供给证书颁发者，以便将你的设备添加到描述文件中。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="pb-16 md:pb-24 px-4 md:px-6 lg:px-8">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-10 md:mb-14">
+      <h2 class="font-bold text-2xl md:text-3xl text-gray-800 mb-3">为什么选择轻松签</h2>
+      <p class="text-sm md:text-base text-gray-500 max-w-xl mx-auto">专业、稳定、易用的 iOS 签名解决方案</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      <div class="feature-card bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+        <div class="feature-icon w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-5">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="font-semibold text-xl text-gray-800 mb-2">极速签名</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">优化的签名引擎，秒级完成 IPA 重签，无需等待，即签即用。</p>
+      </div>
+      <div class="feature-card bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+        <div class="feature-icon w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 mb-5">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <h3 class="font-semibold text-xl text-gray-800 mb-2">安全可靠</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">证书密码本地处理，不上传第三方服务器，保护你的证书安全。</p>
+      </div>
+      <div class="feature-card bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+        <div class="feature-icon w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30 mb-5">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="font-semibold text-xl text-gray-800 mb-2">全机型兼容</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">支持 iOS 11 至 iOS 18+ 全系统版本，iPhone / iPad 全机型适配。</p>
+      </div>
+    </div>
+  </div>
+</section>
 <footer class="bg-white text-gray-600 py-12 md:py-16 px-4 md:px-6 lg:px-8 border-t border-gray-100">
   <div class="max-w-6xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-      <div>
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
-          <span class="font-semibold text-lg text-gray-800">轻松签</span>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-10">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2.5 mb-4">
+          <img src="/assets/logo.png" alt="轻松签" class="w-9 h-9 rounded-xl shadow-md shadow-indigo-500/20">
+          <span class="font-semibold text-xl text-gray-800">轻松签</span>
         </div>
-        <p class="text-xs text-gray-400 leading-relaxed">简单、快速、安全的 iOS 证书自签工具</p>
+        <p class="text-sm text-gray-500 leading-relaxed max-w-sm mb-4">简单、快速、安全的 iOS 证书自签工具，支持 P12 证书在线签名、IPA 重签、UDID 获取，无需电脑一键完成。</p>
+        <div class="flex gap-2">
+          <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium">iOS 11+</span>
+          <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium">v5.0.2</span>
+          <span class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 text-xs font-medium">免费使用</span>
+        </div>
       </div>
       <div>
-        <h4 class="font-semibold text-base text-gray-800 mb-3">快速链接</h4>
-        <ul class="text-xs text-gray-500 space-y-2">
-          <li><a href="#" class="hover:text-indigo-600 transition-colors">签名教程</a></li>
-          <li><a href="#" class="hover:text-indigo-600 transition-colors">常见问题</a></li>
-          <li><a href="#" class="hover:text-indigo-600 transition-colors">证书购买</a></li>
+        <h4 class="font-semibold text-base text-gray-800 mb-4">快速链接</h4>
+        <ul class="text-sm text-gray-500 space-y-2.5">
+          <li><a href="/" class="hover:text-indigo-600 transition-colors">首页</a></li>
+          <li><a href="/#sign" class="hover:text-indigo-600 transition-colors">在线签名</a></li>
+          <li><a href="/tutorial.html" class="hover:text-indigo-600 transition-colors">签名教程</a></li>
+          <li><a href="/faq.html" class="hover:text-indigo-600 transition-colors">常见问题</a></li>
+          <li><a href="/#udid" class="hover:text-indigo-600 transition-colors">获取UDID</a></li>
         </ul>
       </div>
       <div>
-        <h4 class="font-semibold text-base text-gray-800 mb-3">关于</h4>
-        <ul class="text-xs text-gray-500 space-y-2">
+        <h4 class="font-semibold text-base text-gray-800 mb-4">关于</h4>
+        <ul class="text-sm text-gray-500 space-y-2.5">
+          <li><a href="https://puaaa.cn/shop/10.html" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 transition-colors">购买证书</a></li>
           <li><a href="/admin" class="hover:text-indigo-600 transition-colors">管理后台</a></li>
           <li><span class="text-gray-400">版本 5.0.2</span></li>
+          <li><span class="text-gray-400">更新日期 2026-08</span></li>
         </ul>
       </div>
     </div>
-    <div class="mt-10 pt-6 border-t border-gray-100 text-center text-xs text-gray-400">© 2024 轻松签. 仅供学习交流使用</div>
+    <div class="pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-gray-400">© 2026 轻松签. 保留所有权利. 仅供学习交流使用</p>
+      <p class="text-xs text-gray-400">本站与 Apple Inc. 无任何关联，Apple、iPhone、iPad 为 Apple Inc. 商标</p>
+    </div>
   </div>
 </footer>
-
 <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl text-white text-sm shadow-xl z-50 opacity-0 transition-opacity duration-300 pointer-events-none max-w-xs text-center"></div>
-
 <script>
-  const files = { p12: null, mp: null, ipa: null };
-
-  function showToast(msg, type = 'info') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `fixed top-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl text-white text-sm shadow-xl z-50 opacity-100 transition-opacity duration-300 pointer-events-none max-w-xs text-center ${type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-emerald-500' : 'bg-gray-800'}`;
-    setTimeout(() => t.classList.replace('opacity-100', 'opacity-0'), 2500);
-  }
-
-  function showInstallGuide() {
-    const guide = document.getElementById('installGuide');
-    guide.classList.toggle('hidden');
-    if (!guide.classList.contains('hidden')) guide.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  function formatSize(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-  }
-
-  function handleFileSelect(input, type) {
-    const file = input.files[0];
-    if (!file) return;
-    files[type] = file;
-    document.getElementById(type + 'Placeholder').classList.add('hidden');
-    document.getElementById(type + 'Selected').classList.remove('hidden');
-    document.getElementById(type + 'FileName').textContent = file.name;
-    document.getElementById(type + 'FileSize').textContent = formatSize(file.size);
-  }
-
-  function resetFile(type) {
-    files[type] = null;
-    document.getElementById(type + 'Input').value = '';
-    document.getElementById(type + 'Placeholder').classList.remove('hidden');
-    document.getElementById(type + 'Selected').classList.add('hidden');
-  }
-
-  ['p12', 'mp', 'ipa'].forEach(type => {
-    const zone = document.getElementById(type + 'Zone');
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault();
-      zone.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      if (file) {
-        const input = document.getElementById(type + 'Input');
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        input.files = dt.files;
-        handleFileSelect(input, type);
-      }
-    });
-  });
-
-  async function handleSign() {
-    if (!files.p12) return showToast('请选择 P12 证书文件', 'error');
-    if (!files.mp) return showToast('请选择描述文件', 'error');
-    const password = document.getElementById('p12Password').value;
-    if (!password) return showToast('请输入 P12 证书密码', 'error');
-
-    const btn = document.getElementById('signBtn');
-    const btnText = document.getElementById('signBtnText');
-    const progressDiv = document.getElementById('signProgress');
-    const resultDiv = document.getElementById('signResult');
-
-    btn.disabled = true;
-    btnText.textContent = '签名中...';
-    progressDiv.classList.remove('hidden');
-    resultDiv.classList.add('hidden');
-
-    let progress = 0;
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const progressPercent = document.getElementById('progressPercent');
-    const stages = ['正在验证证书...', '正在解析描述文件...', '正在重签名应用...', '正在完成签名...'];
-
-    const interval = setInterval(() => {
-      progress += Math.random() * 15 + 5;
-      if (progress > 95) progress = 95;
-      progressBar.style.width = progress + '%';
-      progressPercent.textContent = Math.floor(progress) + '%';
-      progressText.textContent = stages[Math.min(Math.floor(progress / 25), 3)];
-    }, 400);
-
-    const formData = new FormData();
-    formData.append('p12', files.p12);
-    formData.append('mobileprovision', files.mp);
-    if (files.ipa) formData.append('ipa', files.ipa);
-    formData.append('password', password);
-
-    try {
-      const res = await fetch('/api/sign', { method: 'POST', body: formData });
-      const data = await res.json();
-      clearInterval(interval);
-      progressBar.style.width = '100%';
-      progressPercent.textContent = '100%';
-      progressText.textContent = '签名完成';
-      setTimeout(() => {
-        progressDiv.classList.add('hidden');
-        if (data.success) {
-          resultDiv.classList.remove('hidden');
-          document.getElementById('resultMsg').textContent = data.message || '应用已成功签名';
-          if (data.download_url) document.getElementById('downloadBtn').onclick = () => window.location.href = data.download_url;
-          showToast('签名成功', 'success');
-        } else {
-          showToast(data.message || '签名失败', 'error');
-        }
-        btn.disabled = false;
-        btnText.textContent = '立即签名';
-      }, 500);
-    } catch (e) {
-      clearInterval(interval);
-      progressDiv.classList.add('hidden');
-      btn.disabled = false;
-      btnText.textContent = '立即签名';
-      showToast('网络错误，请确认服务已启动', 'error');
-    }
-  }
+  function isWeChat(){return /MicroMessenger/i.test(navigator.userAgent);}
+  function copyAndTip(){var url=window.location.href;if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){alert('链接已复制，请打开 Safari 粘贴访问');}).catch(function(){prompt('请复制以下链接，在 Safari 中打开：',url);});}else{prompt('请复制以下链接，在 Safari 中打开：',url);}}
+  if(isWeChat()){document.getElementById('wechatMask').classList.remove('hidden');document.getElementById('wechatMask').classList.add('flex');document.body.style.overflow='hidden';}
+  var files={p12:null,mp:null,ipa:null};
+  function showToast(msg,type){type=type||'info';var t=document.getElementById('toast');t.textContent=msg;t.className='fixed top-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl text-white text-sm shadow-xl z-50 opacity-100 transition-opacity duration-300 pointer-events-none max-w-xs text-center '+(type==='error'?'bg-red-500':type==='success'?'bg-emerald-500':'bg-gray-800');setTimeout(function(){t.classList.replace('opacity-100','opacity-0');},2500);}
+  function toggleMobileMenu(){document.getElementById('mobileMenu').classList.toggle('hidden');}
+  function showInstallGuide(){var guide=document.getElementById('installGuide');guide.classList.toggle('hidden');if(!guide.classList.contains('hidden'))guide.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  function togglePassword(){var input=document.getElementById('p12Password');var icon=document.getElementById('eyeIcon');if(input.type==='password'){input.type='text';icon.innerHTML='<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';}else{input.type='password';icon.innerHTML='<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';}}
+  function formatSize(bytes){if(bytes<1024)return bytes+' B';if(bytes<1024*1024)return(bytes/1024).toFixed(1)+' KB';return(bytes/(1024*1024)).toFixed(1)+' MB';}
+  function handleFileSelect(input,type){var file=input.files[0];if(!file)return;files[type]=file;document.getElementById(type+'Placeholder').classList.add('hidden');document.getElementById(type+'Selected').classList.remove('hidden');document.getElementById(type+'FileName').textContent=file.name;document.getElementById(type+'FileSize').textContent=formatSize(file.size);}
+  function resetFile(type){files[type]=null;document.getElementById(type+'Input').value='';document.getElementById(type+'Placeholder').classList.remove('hidden');document.getElementById(type+'Selected').classList.add('hidden');}
+  ['p12','mp','ipa'].forEach(function(type){var zone=document.getElementById(type+'Zone');zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('dragover');});zone.addEventListener('dragleave',function(){zone.classList.remove('dragover');});zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('dragover');var file=e.dataTransfer.files[0];if(file){var input=document.getElementById(type+'Input');var dt=new DataTransfer();dt.items.add(file);input.files=dt.files;handleFileSelect(input,type);}});});
+  async function handleSign(){if(!files.p12)return showToast('请选择 P12 证书文件','error');if(!files.mp)return showToast('请选择描述文件','error');var password=document.getElementById('p12Password').value;if(!password)return showToast('请输入 P12 证书密码','error');var btn=document.getElementById('signBtn');var btnText=document.getElementById('signBtnText');var progressDiv=document.getElementById('signProgress');var resultDiv=document.getElementById('signResult');btn.disabled=true;btn.classList.remove('pulse-ring');btnText.innerHTML='<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 签名中...';progressDiv.classList.remove('hidden');resultDiv.classList.add('hidden');var progress=0;var progressBar=document.getElementById('progressBar');var progressText=document.getElementById('progressText');var progressPercent=document.getElementById('progressPercent');var stages=['正在验证证书...','正在解析描述文件...','正在重签名应用...','正在完成签名...'];var interval=setInterval(function(){progress+=Math.random()*12+4;if(progress>92)progress=92;progressBar.style.width=progress+'%';progressPercent.textContent=Math.floor(progress)+'%';progressText.textContent=stages[Math.min(Math.floor(progress/25),3)];},350);var formData=new FormData();formData.append('p12',files.p12);formData.append('mobileprovision',files.mp);if(files.ipa)formData.append('ipa',files.ipa);formData.append('password',password);try{var res=await fetch('/api/sign',{method:'POST',body:formData});var data=await res.json();clearInterval(interval);progressBar.style.width='100%';progressPercent.textContent='100%';progressText.textContent='签名完成';setTimeout(function(){progressDiv.classList.add('hidden');if(data.success){resultDiv.classList.remove('hidden');document.getElementById('resultMsg').textContent=data.message||'应用已成功签名';if(data.download_url)document.getElementById('downloadBtn').onclick=function(){window.location.href=data.download_url;};showToast('签名成功','success');}else{showToast(data.message||'签名失败','error');}btn.disabled=false;btn.classList.add('pulse-ring');btnText.innerHTML='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg> 立即签名';},600);}catch(e){clearInterval(interval);progressDiv.classList.add('hidden');btn.disabled=false;btn.classList.add('pulse-ring');btnText.innerHTML='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg> 立即签名';showToast('网络错误，请确认服务已启动','error');}}
+  function getUDID(){if(!/iPhone|iPad|iPod/i.test(navigator.userAgent)){showToast('请使用 iPhone 或 iPad 的 Safari 浏览器访问','error');return;}showToast('正在下载描述文件，请在设置中安装','info');window.location.href='/api/udid/profile';}
+  function copyUDID(){var udid=document.getElementById('udidValue').textContent;navigator.clipboard.writeText(udid).then(function(){showToast('UDID 已复制','success');}).catch(function(){var ta=document.createElement('textarea');ta.value=udid;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('UDID 已复制','success');});}
+  window.addEventListener('DOMContentLoaded',function(){var params=new URLSearchParams(window.location.search);var udid=params.get('udid');if(udid){document.getElementById('udidResult').classList.remove('hidden');document.getElementById('udidValue').textContent=udid;document.getElementById('udid').scrollIntoView({behavior:'smooth'});showToast('UDID 获取成功','success');history.replaceState({},document.title,window.location.pathname+window.location.hash);}});
 </script>
-
 </body>
 </html>
