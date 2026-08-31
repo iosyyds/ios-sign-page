@@ -37,10 +37,42 @@
 </style>
 </head>
 <body class="bg-slate-50 text-gray-800 min-h-screen overflow-x-hidden">
+
+<div id="wechatMask" class="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm hidden flex-col items-center justify-start pt-16 px-8">
+  <div class="w-full max-w-sm">
+    <div class="flex justify-end mb-4">
+      <div class="relative">
+        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+        </div>
+        <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-lg">1</div>
+      </div>
+    </div>
+    <div class="bg-white rounded-3xl shadow-2xl p-8 text-center">
+      <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center mx-auto mb-5 shadow-xl shadow-indigo-500/30">
+        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <h2 class="text-xl font-bold text-gray-800 mb-2">请在 Safari 中打开</h2>
+      <p class="text-sm text-gray-500 mb-5 leading-relaxed">微信内置浏览器不支持安装描述文件和签名应用<br>请使用 iOS 默认浏览器 Safari 打开本页面</p>
+      <div class="bg-indigo-50 rounded-2xl p-4 mb-5 text-left">
+        <p class="text-xs text-indigo-700 font-medium mb-2">操作步骤：</p>
+        <ol class="text-xs text-indigo-600/80 space-y-1.5">
+          <li class="flex gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">1</span><span>点击右上角 <strong>···</strong> 按钮</span></li>
+          <li class="flex gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">2</span><span>选择「在 Safari 中打开」</span></li>
+          <li class="flex gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">3</span><span>在 Safari 中正常使用签名功能</span></li>
+        </ol>
+      </div>
+      <button onclick="copyAndTip()" class="w-full px-5 py-3 rounded-2xl font-medium bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm active:scale-95 transition-all">复制链接，去 Safari 打开</button>
+      <p class="text-xs text-gray-400 mt-3">复制后打开 Safari，粘贴到地址栏访问</p>
+    </div>
+  </div>
+</div>
+
 <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
   <div class="bg-blob w-96 h-96 bg-indigo-300 top-[-100px] right-[-100px]"></div>
   <div class="bg-blob w-80 h-80 bg-purple-300 bottom-[20%] left-[-80px]"></div>
 </div>
+
 <nav class="glass-card border-0 px-4 md:px-6 lg:px-8 py-3.5 sticky top-0 z-50 shadow-sm">
   <div class="flex items-center justify-between max-w-6xl mx-auto gap-4">
     <a href="/" class="flex items-center gap-2.5 group">
@@ -66,6 +98,8 @@
     <a href="/#udid" class="px-4 py-2.5 rounded-xl hover:bg-indigo-50 text-gray-600">获取UDID</a>
   </div>
 </nav>
+
+<!-- 页面标题 -->
 <section class="py-12 md:py-16 px-4 md:px-6 lg:px-8">
   <div class="max-w-4xl mx-auto text-center">
     <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 text-indigo-600 text-xs font-medium mb-5 shadow-md shadow-indigo-100/50 border border-indigo-100/50">
@@ -76,6 +110,8 @@
     <p class="text-base md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">收集了使用轻松签过程中最常见的问题，点击问题即可查看详细解答</p>
   </div>
 </section>
+
+<!-- 搜索框 -->
 <section class="pb-8 px-4 md:px-6 lg:px-8">
   <div class="max-w-2xl mx-auto">
     <div class="relative">
@@ -84,8 +120,12 @@
     </div>
   </div>
 </section>
+
+<!-- FAQ 分类 -->
 <section class="pb-16 px-4 md:px-6 lg:px-8">
   <div class="max-w-4xl mx-auto space-y-10">
+
+    <!-- 签名相关 -->
     <div class="faq-category" data-category="sign">
       <div class="flex items-center gap-3 mb-5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
@@ -94,73 +134,96 @@
         <h2 class="font-bold text-xl md:text-2xl text-gray-800">签名相关</h2>
       </div>
       <div class="space-y-3">
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="签名失败">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">签名失败怎么办？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
-            <p>签名失败通常有以下原因，请逐一排查：</p>
-            <ol class="list-decimal pl-5 space-y-1.5">
-              <li><strong>密码错误</strong>：确认 P12 证书密码正确，注意区分大小写，不要有多余空格</li>
-              <li><strong>证书与描述文件不匹配</strong>：确保描述文件是用同一个证书生成的</li>
-              <li><strong>证书已过期或被吊销</strong>：检查证书有效期，过期需要重新申请</li>
-              <li><strong>IPA 文件损坏</strong>：确认 IPA 文件完整，可尝试重新下载</li>
-              <li><strong>文件格式不正确</strong>：P12 必须是 .p12 格式，描述文件必须是 .mobileprovision 格式</li>
-            </ol>
-            <p>如果以上都没问题，建议重新导出证书和描述文件后再试。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
+              <p>签名失败通常有以下原因，请逐一排查：</p>
+              <ol class="list-decimal pl-5 space-y-1.5">
+                <li><strong>密码错误</strong>：确认 P12 证书密码正确，注意区分大小写，不要有多余空格</li>
+                <li><strong>证书与描述文件不匹配</strong>：确保描述文件是用同一个证书生成的</li>
+                <li><strong>证书已过期或被吊销</strong>：检查证书有效期，过期需要重新申请</li>
+                <li><strong>IPA 文件损坏</strong>：确认 IPA 文件完整，可尝试重新下载</li>
+                <li><strong>文件格式不正确</strong>：P12 必须是 .p12 格式，描述文件必须是 .mobileprovision 格式</li>
+              </ol>
+              <p>如果以上都没问题，建议重新导出证书和描述文件后再试。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="密码错误">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">提示 P12 证书密码错误？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
-            <p>P12 证书密码是导出证书时设置的，不是你的 Apple ID 密码。请确认：</p>
-            <ul class="list-disc pl-5 space-y-1.5">
-              <li>密码中不要有多余的空格或换行</li>
-              <li>注意区分大小写字母</li>
-              <li>如果是购买的证书，密码通常由商家提供，请联系商家确认</li>
-              <li>如果是自己导出的，回忆导出时设置的密码</li>
-            </ul>
-            <p>如果确实忘记密码，无法找回，只能重新导出 P12 证书并设置新密码。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
+              <p>P12 证书密码是导出证书时设置的，不是你的 Apple ID 密码。请确认：</p>
+              <ul class="list-disc pl-5 space-y-1.5">
+                <li>密码中不要有多余的空格或换行</li>
+                <li>注意区分大小写字母</li>
+                <li>如果是购买的证书，密码通常由商家提供，请联系商家确认</li>
+                <li>如果是自己导出的，回忆导出时设置的密码</li>
+              </ul>
+              <p>如果确实忘记密码，无法找回，只能重新导出 P12 证书并设置新密码。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="签名时间">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">签名需要多长时间？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>签名时间取决于 IPA 文件大小和服务器性能：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>小应用（10MB 以内）：通常 5-10 秒</li>
-              <li>中等应用（10-50MB）：通常 10-30 秒</li>
-              <li>大应用（50MB 以上）：可能需要 30 秒到几分钟</li>
-            </ul>
-            <p class="mt-2">签名过程中请不要关闭页面，完成后会自动显示下载按钮。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>签名时间取决于 IPA 文件大小和服务器性能：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>小应用（10MB 以内）：通常 5-10 秒</li>
+                <li>中等应用（10-50MB）：通常 10-30 秒</li>
+                <li>大应用（50MB 以上）：可能需要 30 秒到几分钟</li>
+              </ul>
+              <p class="mt-2">签名过程中请不要关闭页面，完成后会自动显示下载按钮。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="支持哪些IPA">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">支持哪些 IPA 文件？有大小限制吗？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>轻松签支持所有标准的 iOS IPA 安装包，包括：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>App Store 导出的 IPA</li>
-              <li>企业证书签名的 IPA</li>
-              <li>开发证书签名的 IPA</li>
-              <li>第三方应用商店的 IPA</li>
-            </ul>
-            <p class="mt-2">默认文件大小限制为 200MB，如需签名更大的应用，可在服务器配置中调整上限。</p>
-            <p class="mt-2 text-amber-600">注意：不选 IPA 文件时，默认签名轻松签 App 本身。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>轻松签支持所有标准的 iOS IPA 安装包，包括：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>App Store 导出的 IPA</li>
+                <li>企业证书签名的 IPA</li>
+                <li>开发证书签名的 IPA</li>
+                <li>第三方应用商店的 IPA</li>
+              </ul>
+              <p class="mt-2">默认文件大小限制为 200MB，如需签名更大的应用，可在服务器配置中调整上限。</p>
+              <p class="mt-2 text-amber-600">注意：不选 IPA 文件时，默认签名轻松签 App 本身。</p>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
+
+    <!-- 安装相关 -->
     <div class="faq-category" data-category="install">
       <div class="flex items-center gap-3 mb-5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
@@ -169,73 +232,96 @@
         <h2 class="font-bold text-xl md:text-2xl text-gray-800">安装相关</h2>
       </div>
       <div class="space-y-3">
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="未受信任">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">安装后打开提示「未受信任的企业级开发者」？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>这是 iOS 的安全机制，需要手动信任证书：</p>
-            <ol class="list-decimal pl-5 space-y-1.5 mt-2">
-              <li>打开 iPhone 的「设置」</li>
-              <li>进入「通用」→「VPN与设备管理」</li>
-              <li>在「企业级 App」下方找到对应的证书</li>
-              <li>点击证书，然后点击「信任」</li>
-              <li>在弹出的确认框中再次点击「信任」</li>
-            </ol>
-            <p class="mt-2">信任后回到桌面即可正常打开应用。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>这是 iOS 的安全机制，需要手动信任证书：</p>
+              <ol class="list-decimal pl-5 space-y-1.5 mt-2">
+                <li>打开 iPhone 的「设置」</li>
+                <li>进入「通用」→「VPN与设备管理」（部分系统叫「描述文件」或「设备管理」）</li>
+                <li>在「企业级 App」下方找到对应的证书</li>
+                <li>点击证书，然后点击「信任」</li>
+                <li>在弹出的确认框中再次点击「信任」</li>
+              </ol>
+              <p class="mt-2">信任后回到桌面即可正常打开应用。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="安装失败">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">签名成功但安装失败？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
-            <p>安装失败最常见的原因是<strong>描述文件中没有包含目标设备的 UDID</strong>：</p>
-            <ol class="list-decimal pl-5 space-y-1.5">
-              <li>确认你的设备 UDID 已添加到描述文件中</li>
-              <li>如果没有，使用轻松签的「获取 UDID」功能获取设备 UDID</li>
-              <li>将 UDID 提供给证书颁发者，重新生成包含该设备的描述文件</li>
-              <li>用新的描述文件重新签名后再安装</li>
-            </ol>
-            <p>其他可能原因：设备系统版本过低、存储空间不足、网络问题等。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
+              <p>安装失败最常见的原因是<strong>描述文件中没有包含目标设备的 UDID</strong>：</p>
+              <ol class="list-decimal pl-5 space-y-1.5">
+                <li>确认你的设备 UDID 已添加到描述文件中</li>
+                <li>如果没有，使用轻松签的「获取 UDID」功能获取设备 UDID</li>
+                <li>将 UDID 提供给证书颁发者，重新生成包含该设备的描述文件</li>
+                <li>用新的描述文件重新签名后再安装</li>
+              </ol>
+              <p>其他可能原因：设备系统版本过低、存储空间不足、网络问题等。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="闪退">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">应用打开后闪退？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
-            <p>应用闪退可能有以下原因：</p>
-            <ul class="list-disc pl-5 space-y-1.5">
-              <li><strong>证书过期或被吊销</strong>：检查证书状态，需要更换证书重新签名</li>
-              <li><strong>应用不兼容当前系统</strong>：部分旧应用可能不支持新系统版本</li>
-              <li><strong>应用本身有 bug</strong>：尝试重新下载原始 IPA 再签名</li>
-              <li><strong>签名过程中出错</strong>：重新签名一次，确保所有文件正确</li>
-              <li><strong>设备越狱或修改过系统</strong>：部分应用在越狱设备上可能闪退</li>
-            </ul>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
+              <p>应用闪退可能有以下原因：</p>
+              <ul class="list-disc pl-5 space-y-1.5">
+                <li><strong>证书过期或被吊销</strong>：检查证书状态，企业证书可能被苹果吊销，需要更换证书重新签名</li>
+                <li><strong>应用不兼容当前系统</strong>：部分旧应用可能不支持新系统版本</li>
+                <li><strong>应用本身有 bug</strong>：尝试重新下载原始 IPA 再签名</li>
+                <li><strong>签名过程中出错</strong>：重新签名一次，确保所有文件正确</li>
+                <li><strong>设备越狱或修改过系统</strong>：部分应用在越狱设备上可能闪退</li>
+              </ul>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="桌面没有图标">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">安装后桌面没有图标？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>安装后桌面没有图标，通常是安装未真正完成：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>等待安装完成，大应用可能需要较长时间</li>
-              <li>检查设备存储空间是否充足</li>
-              <li>尝试重启设备后查看</li>
-              <li>在 App 资源库中搜索应用名称</li>
-              <li>如果仍没有，删除后重新安装</li>
-            </ul>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>安装后桌面没有图标，通常是安装未真正完成：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>等待安装完成，大应用可能需要较长时间</li>
+                <li>检查设备存储空间是否充足</li>
+                <li>尝试重启设备后查看</li>
+                <li>在 App 资源库中搜索应用名称</li>
+                <li>如果仍没有，删除后重新安装</li>
+              </ul>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
+
+    <!-- 证书相关 -->
     <div class="faq-category" data-category="cert">
       <div class="flex items-center gap-3 mb-5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
@@ -244,77 +330,100 @@
         <h2 class="font-bold text-xl md:text-2xl text-gray-800">证书相关</h2>
       </div>
       <div class="space-y-3">
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="证书有效期">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">证书有效期是多久？过期了怎么办？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
-            <p>不同类型的证书有效期不同：</p>
-            <ul class="list-disc pl-5 space-y-1.5">
-              <li><strong>免费开发者账号</strong>：证书有效期 7 天，应用 7 天后需要重新签名安装</li>
-              <li><strong>付费开发者账号（$99/年）</strong>：证书有效期 1 年，最多安装 100 台设备</li>
-              <li><strong>企业证书（$299/年）</strong>：证书有效期 1 年，可无限设备安装，但有被吊销风险</li>
-              <li><strong>第三方购买的证书</strong>：有效期视商家而定，通常为几个月到 1 年</li>
-            </ul>
-            <p>证书过期后，已安装的应用将无法打开，需要用新证书重新签名安装。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed space-y-2">
+              <p>不同类型的证书有效期不同：</p>
+              <ul class="list-disc pl-5 space-y-1.5">
+                <li><strong>免费开发者账号</strong>：证书有效期 7 天，应用 7 天后需要重新签名安装</li>
+                <li><strong>付费开发者账号（$99/年）</strong>：证书有效期 1 年，开发证书应用最多安装 100 台设备</li>
+                <li><strong>企业证书（$299/年）</strong>：证书有效期 1 年，可无限设备安装，但有被吊销风险</li>
+                <li><strong>第三方购买的证书</strong>：有效期视商家而定，通常为几个月到 1 年</li>
+              </ul>
+              <p>证书过期后，已安装的应用将无法打开，需要用新证书重新签名安装。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="证书被吊销">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">证书被吊销了怎么办？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>企业证书可能因为违反苹果政策被吊销，这是无法避免的风险：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>证书被吊销后，所有用该证书签名的应用都无法打开</li>
-              <li>已安装的应用数据通常还在，但需要重新签名安装才能访问</li>
-              <li>联系证书提供方更换新证书</li>
-              <li>用新证书重新签名应用后安装</li>
-              <li>建议定期备份应用内的重要数据</li>
-            </ul>
-            <p class="mt-2 text-amber-600">购买证书时建议选择有售后保障的商家，被吊销后可以免费补发。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>企业证书可能因为违反苹果政策被吊销，这是无法避免的风险：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>证书被吊销后，所有用该证书签名的应用都无法打开</li>
+                <li>已安装的应用数据通常还在，但需要重新签名安装才能访问</li>
+                <li>联系证书提供方更换新证书</li>
+                <li>用新证书重新签名应用后安装</li>
+                <li>建议定期备份应用内的重要数据</li>
+              </ul>
+              <p class="mt-2 text-amber-600">购买证书时建议选择有售后保障的商家，被吊销后可以免费补发。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="一个证书签多少应用">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">一个证书可以签名多少个应用？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>理论上一个证书可以签名无限多个应用，但有以下限制：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li><strong>免费开发者账号</strong>：最多同时安装 3 个应用</li>
-              <li><strong>付费开发者账号</strong>：App ID 数量有限制，但通常足够使用</li>
-              <li><strong>企业证书</strong>：无应用数量限制，但有被吊销风险</li>
-              <li><strong>设备数量</strong>：开发证书最多注册 100 台设备/年</li>
-            </ul>
-            <p class="mt-2">每个应用需要独立的 Bundle ID，签名时会自动修改 Bundle ID 以避免冲突。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>理论上一个证书可以签名无限多个应用，但有以下限制：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li><strong>免费开发者账号</strong>：最多同时安装 3 个应用（包括轻松签本身）</li>
+                <li><strong>付费开发者账号</strong>：App ID 数量有限制，但通常足够使用</li>
+                <li><strong>企业证书</strong>：无应用数量限制，但有被吊销风险</li>
+                <li><strong>设备数量</strong>：开发证书最多注册 100 台设备/年，企业证书无限制</li>
+              </ul>
+              <p class="mt-2">每个应用需要独立的 Bundle ID，签名时会自动修改 Bundle ID 以避免冲突。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="哪里买证书">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">哪里可以购买 P12 证书？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>如果你没有 Apple 开发者账号，可以通过以下方式获取证书：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>注册 Apple 开发者账号（$99/年），自行生成证书</li>
-              <li>购买第三方证书服务，商家提供 P12 证书和描述文件</li>
-            </ul>
-            <div class="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100/50">
-              <p class="text-sm text-indigo-700 mb-2"><strong>推荐购买渠道：</strong></p>
-              <a href="https://puaaa.cn/shop/10.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-medium shadow-md shadow-indigo-600/30 hover:shadow-lg transition-all">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                点击购买证书
-              </a>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>如果你没有 Apple 开发者账号，可以通过以下方式获取证书：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>注册 Apple 开发者账号（$99/年），自行生成证书</li>
+                <li>购买第三方证书服务，商家提供 P12 证书和描述文件</li>
+              </ul>
+              <div class="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100/50">
+                <p class="text-sm text-indigo-700 mb-2"><strong>推荐购买渠道：</strong></p>
+                <a href="https://puaaa.cn/shop/10.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-medium shadow-md shadow-indigo-600/30 hover:shadow-lg transition-all">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                  点击购买证书
+                </a>
+              </div>
             </div>
-          </div></div>
+          </div>
         </div>
+
       </div>
     </div>
+
+    <!-- UDID 相关 -->
     <div class="faq-category" data-category="udid">
       <div class="flex items-center gap-3 mb-5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
@@ -323,57 +432,77 @@
         <h2 class="font-bold text-xl md:text-2xl text-gray-800">UDID 相关</h2>
       </div>
       <div class="space-y-3">
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="什么是UDID">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">什么是 UDID？为什么需要它？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>UDID（Unique Device Identifier）是 iOS 设备的唯一标识符，由 40 位十六进制字符组成（iPhone X 及以后机型为 25 位）。</p>
-            <p class="mt-2">需要 UDID 的原因：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>开发证书和 Ad Hoc 证书只能安装到描述文件中注册的设备</li>
-              <li>将设备 UDID 添加到描述文件后，该设备才能安装签名后的应用</li>
-              <li>企业证书不需要 UDID，但有被吊销风险</li>
-            </ul>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>UDID（Unique Device Identifier）是 iOS 设备的唯一标识符，由 40 位十六进制字符组成（iPhone X 及以后机型为 25 位）。</p>
+              <p class="mt-2">需要 UDID 的原因：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>开发证书和 Ad Hoc 证书只能安装到描述文件中注册的设备</li>
+                <li>将设备 UDID 添加到描述文件后，该设备才能安装签名后的应用</li>
+                <li>企业证书不需要 UDID，但有被吊销风险</li>
+              </ul>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="如何获取UDID">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">如何获取设备 UDID？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>使用轻松签可以一键获取 UDID，无需电脑：</p>
-            <ol class="list-decimal pl-5 space-y-1.5 mt-2">
-              <li>用 iPhone 的 Safari 浏览器打开轻松签首页</li>
-              <li>点击「获取 UDID」按钮</li>
-              <li>在弹出的对话框中点击「允许」下载描述文件</li>
-              <li>到「设置 → 通用 → VPN与设备管理」中安装描述文件</li>
-              <li>安装后自动跳转回页面，即可看到并复制你的 UDID</li>
-            </ol>
-            <p class="mt-3">也可以通过电脑获取：连接 iPhone 到 iTunes/Finder，点击序列号即可显示 UDID。</p>
-            <a href="/#udid" class="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-xl bg-amber-500 text-white text-xs font-medium shadow-md shadow-amber-500/30 hover:shadow-lg transition-all">立即获取 UDID</a>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>使用轻松签可以一键获取 UDID，无需电脑：</p>
+              <ol class="list-decimal pl-5 space-y-1.5 mt-2">
+                <li>用 iPhone 的 Safari 浏览器打开轻松签首页</li>
+                <li>点击「获取 UDID」按钮</li>
+                <li>在弹出的对话框中点击「允许」下载描述文件</li>
+                <li>到「设置 → 通用 → VPN与设备管理」中安装描述文件</li>
+                <li>安装后自动跳转回页面，即可看到并复制你的 UDID</li>
+              </ol>
+              <p class="mt-3">也可以通过电脑获取：连接 iPhone 到 iTunes/Finder，点击序列号即可显示 UDID。</p>
+              <a href="/#udid" class="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-xl bg-amber-500 text-white text-xs font-medium shadow-md shadow-amber-500/30 hover:shadow-lg transition-all">
+                立即获取 UDID
+              </a>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="UDID安全吗">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">获取 UDID 会泄露隐私吗？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>UDID 只是设备的唯一标识符，<strong>不包含任何个人隐私信息</strong>：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>UDID 不包含你的姓名、电话、位置等信息</li>
-              <li>UDID 不能用于追踪你的个人身份</li>
-              <li>获取 UDID 的描述文件只读取设备基本信息（UDID、型号、系统版本）</li>
-              <li>获取完成后可以随时删除描述文件</li>
-            </ul>
-            <p class="mt-2">轻松签不会将你的 UDID 分享给任何第三方，仅用于签名服务。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>UDID 只是设备的唯一标识符，<strong>不包含任何个人隐私信息</strong>：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>UDID 不包含你的姓名、电话、位置等信息</li>
+                <li>UDID 不能用于追踪你的个人身份</li>
+                <li>获取 UDID 的描述文件只读取设备基本信息（UDID、型号、系统版本）</li>
+                <li>获取完成后可以随时删除描述文件</li>
+              </ul>
+              <p class="mt-2">轻松签不会将你的 UDID 分享给任何第三方，仅用于签名服务。</p>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
+
+    <!-- 其他问题 -->
     <div class="faq-category" data-category="other">
       <div class="flex items-center gap-3 mb-5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow-lg shadow-pink-500/30">
@@ -382,72 +511,95 @@
         <h2 class="font-bold text-xl md:text-2xl text-gray-800">其他问题</h2>
       </div>
       <div class="space-y-3">
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="支持哪些iOS版本">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">支持哪些 iOS 版本和设备？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>轻松签支持广泛的 iOS 设备和系统版本：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li><strong>系统版本</strong>：iOS 11.0 至 iOS 18+（含最新测试版）</li>
-              <li><strong>设备类型</strong>：iPhone、iPad、iPod Touch</li>
-              <li><strong>芯片</strong>：A7 至 A18 Pro、M1、M2、M3、M4</li>
-              <li><strong>越狱设备</strong>：支持，但部分应用可能在越狱环境下异常</li>
-            </ul>
-            <p class="mt-2">具体应用能否运行还取决于应用本身的最低系统要求。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>轻松签支持广泛的 iOS 设备和系统版本：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li><strong>系统版本</strong>：iOS 11.0 至 iOS 18+（含最新测试版）</li>
+                <li><strong>设备类型</strong>：iPhone、iPad、iPod Touch</li>
+                <li><strong>芯片</strong>：A7 至 A18 Pro、M1、M2、M3、M4</li>
+                <li><strong>越狱设备</strong>：支持，但部分应用可能在越狱环境下异常</li>
+              </ul>
+              <p class="mt-2">具体应用能否运行还取决于应用本身的最低系统要求。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="免费吗">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">轻松签是免费的吗？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>轻松签签名工具本身是<strong>完全免费</strong>的，你可以自由使用在线签名功能。</p>
-            <p class="mt-2">但你需要准备自己的 P12 证书和描述文件：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>有 Apple 开发者账号：可以自行生成证书，无需额外费用</li>
-              <li>没有开发者账号：需要购买第三方证书服务（费用由商家收取）</li>
-            </ul>
-            <p class="mt-2">轻松签不收取任何签名费用，也不会从证书购买中获取佣金。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>轻松签签名工具本身是<strong>完全免费</strong>的，你可以自由使用在线签名功能。</p>
+              <p class="mt-2">但你需要准备自己的 P12 证书和描述文件：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>有 Apple 开发者账号：可以自行生成证书，无需额外费用</li>
+                <li>没有开发者账号：需要购买第三方证书服务（费用由商家收取）</li>
+              </ul>
+              <p class="mt-2">轻松签不收取任何签名费用，也不会从证书购买中获取佣金。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="数据安全">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">我的证书和数据安全吗？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p>轻松签非常重视用户数据安全：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>证书密码仅在签名时使用，不会存储到服务器</li>
-              <li>上传的证书文件和 IPA 文件仅用于本次签名</li>
-              <li>所有数据传输通过 HTTPS 加密（部署到线上后）</li>
-              <li>不会将你的证书、UDID 或任何个人信息分享给第三方</li>
-              <li>开源代码可自行部署，完全掌控自己的数据</li>
-            </ul>
-            <p class="mt-2 text-amber-600">建议：不要在公共设备上使用敏感证书，使用完毕后及时清理浏览器缓存。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p>轻松签非常重视用户数据安全：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>证书密码仅在签名时使用，不会存储到服务器</li>
+                <li>上传的证书文件和 IPA 文件仅用于本次签名，签名完成后可自动清理</li>
+                <li>所有数据传输通过 HTTPS 加密（部署到线上后）</li>
+                <li>不会将你的证书、UDID 或任何个人信息分享给第三方</li>
+                <li>开源代码可自行部署，完全掌控自己的数据</li>
+              </ul>
+              <p class="mt-2 text-amber-600">建议：不要在公共设备上使用敏感证书，使用完毕后及时清理浏览器缓存。</p>
+            </div>
+          </div>
         </div>
+
         <div class="faq-item bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden" data-question="需要电脑吗">
           <button class="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left" onclick="toggleFAQ(this)">
             <span class="font-medium text-sm md:text-base text-gray-800">使用轻松签需要电脑吗？</span>
-            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></span>
+            <span class="faq-icon w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </span>
           </button>
-          <div class="faq-answer px-5 md:px-6"><div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
-            <p><strong>不需要电脑！</strong>轻松签的设计理念就是让你在手机上完成所有操作：</p>
-            <ul class="list-disc pl-5 space-y-1.5 mt-2">
-              <li>用 iPhone Safari 浏览器打开网站即可签名</li>
-              <li>文件可以从 iCloud、网盘或其他 App 导入</li>
-              <li>获取 UDID 也不需要电脑</li>
-              <li>签名后可直接在手机上安装</li>
-            </ul>
-            <p class="mt-2">当然，你也可以在电脑上使用轻松签，签名后通过数据线或网盘传输到手机安装。</p>
-          </div></div>
+          <div class="faq-answer px-5 md:px-6">
+            <div class="pb-5 md:pb-6 text-sm text-gray-600 leading-relaxed">
+              <p><strong>不需要电脑！</strong>轻松签的设计理念就是让你在手机上完成所有操作：</p>
+              <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                <li>用 iPhone Safari 浏览器打开网站即可签名</li>
+                <li>文件可以从 iCloud、网盘或其他 App 导入</li>
+                <li>获取 UDID 也不需要电脑</li>
+                <li>签名后可直接在手机上安装</li>
+              </ul>
+              <p class="mt-2">当然，你也可以在电脑上使用轻松签，签名后通过数据线或网盘传输到手机安装。</p>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
+
+    <!-- 无搜索结果提示 -->
     <div id="noResult" class="hidden text-center py-16">
       <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
         <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -456,8 +608,11 @@
       <p class="text-sm text-gray-500">试试其他关键词，或查看签名教程获取更多帮助</p>
       <a href="/tutorial.html" class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-medium shadow-lg shadow-indigo-600/30 hover:shadow-xl hover:-translate-y-0.5 transition-all">查看签名教程</a>
     </div>
+
   </div>
 </section>
+
+<!-- 底部CTA -->
 <section class="pb-16 px-4 md:px-6 lg:px-8">
   <div class="max-w-4xl mx-auto">
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl shadow-xl shadow-indigo-600/30 p-8 md:p-10 text-center text-white">
@@ -470,6 +625,8 @@
     </div>
   </div>
 </section>
+
+<!-- 页脚 -->
 <footer class="bg-white text-gray-600 py-12 md:py-16 px-4 md:px-6 lg:px-8 border-t border-gray-100">
   <div class="max-w-6xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-10">
@@ -511,8 +668,12 @@
     </div>
   </div>
 </footer>
+
 <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl text-white text-sm shadow-xl z-50 opacity-0 transition-opacity duration-300 pointer-events-none max-w-xs text-center"></div>
 <script>
+  function isWeChat(){return /MicroMessenger/i.test(navigator.userAgent);}
+  function copyAndTip(){const url=window.location.href;if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>{alert('链接已复制，请打开 Safari 粘贴访问');}).catch(()=>{prompt('请复制以下链接，在 Safari 中打开：',url);});}else{prompt('请复制以下链接，在 Safari 中打开：',url);}}
+  if(isWeChat()){document.getElementById('wechatMask').classList.remove('hidden');document.getElementById('wechatMask').classList.add('flex');document.body.style.overflow='hidden';}
   function toggleFAQ(btn) {
     const item = btn.closest('.faq-item');
     const wasActive = item.classList.contains('active');
@@ -534,6 +695,7 @@
     });
     document.getElementById('noResult').classList.toggle('hidden', hasResult);
   }
+  function showToast(msg, type='info'){const t=document.getElementById('toast');t.textContent=msg;t.className=`fixed top-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl text-white text-sm shadow-xl z-50 opacity-100 transition-opacity duration-300 pointer-events-none max-w-xs text-center ${type==='error'?'bg-red-500':type==='success'?'bg-emerald-500':'bg-gray-800'}`;setTimeout(()=>t.classList.replace('opacity-100','opacity-0'),2500);}
 </script>
 </body>
 </html>
