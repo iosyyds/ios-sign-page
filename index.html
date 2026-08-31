@@ -578,11 +578,16 @@
       content.style.opacity = '1';
     }
   });
-  // 下载 IPA 安装包（确保文件名正确，避免 GitHub Pages 添加 .html 后缀）
+  // 下载 IPA 安装包（用 jsDelivr CDN 避免 GitHub Pages 的 MIME 类型问题）
   function downloadIPAPackage() {
     showToast('正在下载安装包...', 'info');
-    fetch('downloads/esign_5.0.2_signed.ipa')
-      .then(res => res.blob())
+    // jsDelivr CDN 链接，确保文件类型正确
+    const ipaUrl = 'https://cdn.jsdelivr.net/gh/iosyyds/ios-sign-page@main/downloads/esign_5.0.2_signed.ipa';
+    fetch(ipaUrl)
+      .then(res => {
+        if (!res.ok) throw new Error('下载失败');
+        return res.blob();
+      })
       .then(blob => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -595,8 +600,8 @@
         showToast('安装包下载中', 'success');
       })
       .catch(() => {
-        // 如果 fetch 失败，直接跳转下载
-        window.location.href = 'downloads/esign_5.0.2_signed.ipa';
+        // 如果 CDN 失败，直接跳转
+        window.location.href = ipaUrl;
       });
   }
   const files = { p12: null, mp: null, ipa: null };
@@ -712,20 +717,29 @@
       setTimeout(() => {
         progressDiv.classList.add('hidden');
         resultDiv.classList.remove('hidden');
-        document.getElementById('resultMsg').textContent = '应用已成功签名，点击下方按钮下载';
-        // 生成下载链接：用户上传了 IPA 就下载原文件，否则下载默认轻松签
+        const downloadBtn = document.getElementById('downloadBtn');
         const downloadFile = files.ipa || null;
         if (downloadFile) {
+          // 用户上传了 IPA，显示下载按钮
+          document.getElementById('resultMsg').textContent = '应用已成功签名，点击下方按钮下载';
+          downloadBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 下载签名后的 IPA';
           const blobUrl = URL.createObjectURL(downloadFile);
-          document.getElementById('downloadBtn').onclick = () => {
+          downloadBtn.onclick = () => {
             const a = document.createElement('a');
             a.href = blobUrl;
             a.download = 'signed_' + downloadFile.name;
             a.click();
           };
         } else {
-          document.getElementById('downloadBtn').onclick = () => {
-            window.location.href = 'downloads/esign_5.0.2_signed.ipa';
+          // 签名默认轻松签，显示立即安装按钮
+          document.getElementById('resultMsg').textContent = '轻松签已签名完成，点击下方按钮立即安装';
+          downloadBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg> 立即安装到 iPhone';
+          downloadBtn.className = 'px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30 text-sm active:scale-95 inline-flex items-center gap-2';
+          downloadBtn.onclick = () => {
+            // iOS itms-services 协议直接安装
+            const plistUrl = 'https://cdn.jsdelivr.net/gh/iosyyds/ios-sign-page@main/install.plist';
+            window.location.href = 'itms-services://?action=download-manifest&url=' + encodeURIComponent(plistUrl);
+            showToast('正在安装轻松签，请在桌面查看进度', 'info');
           };
         }
         showToast('签名成功', 'success');
@@ -743,7 +757,7 @@
     }
   }
 
-  async function getUDID() {
+  function getUDID() {
     if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       showToast('请使用 iPhone 或 iPad 的 Safari 浏览器访问', 'error');
       return;
@@ -753,28 +767,11 @@
       showToast('UDID 服务未配置，请联系管理员', 'error');
       return;
     }
-    const btn = event ? event.currentTarget : null;
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 正在连接...';
-    }
-    showToast('正在连接 UDID 服务...', 'info');
-    try {
-      // 健康检查
-      const healthRes = await fetch(workerUrl + '/health', { method: 'GET', timeout: 5000 });
-      if (!healthRes.ok) throw new Error('服务响应异常');
-    } catch (e) {
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 获取我的 UDID';
-      }
-      showToast('UDID 服务连接失败，请稍后重试或检查网络', 'error');
-      return;
-    }
-    showToast('正在下载描述文件，请在设置中安装', 'info');
+    showToast('正在下载描述文件，请在「设置」中安装', 'info');
+    // 直接跳转下载描述文件，不做健康检查（避免 CORS 问题导致卡死）
     setTimeout(() => {
       window.location.href = workerUrl + '/profile';
-    }, 500);
+    }, 300);
   }
 
   function copyUDID() {
