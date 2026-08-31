@@ -1,13 +1,16 @@
 /**
- * 后端 API 地址配置
+ * 配置文件
  *
- * 如果你把后端部署到了 Render/Railway/Vercel 等平台，
- * 请把下面的地址改为你的后端地址，例如：
- *   window.API_BASE_URL = 'https://ios-sign-server.onrender.com';
- *
- * 如果前后端部署在同一个域名下（如自己的 VPS），留空即可：
- *   window.API_BASE_URL = '';
- *
- * 部署教程见 README.md
+ * 【重要】部署完成后，需要修改下面的地址
  */
+
+// ====== UDID 服务地址（Cloudflare Workers）======
+// 部署 Cloudflare Workers 后，把地址填在这里，例如：
+//   window.UDID_WORKER_URL = 'https://udid-getter.yourname.workers.dev';
+// 部署教程见 README.md
+window.UDID_WORKER_URL = '';
+
+// ====== 后端 API 地址（可选，不需要后台功能可留空）======
+// 如果你部署了 Node.js 后端（Render/服务器），把地址填在这里
+// 如果只需要 UDID + 签名功能，留空即可（签名用纯前端模拟）
 window.API_BASE_URL = '';

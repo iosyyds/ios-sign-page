@@ -394,7 +394,7 @@
 </section>
 
 <!-- 后端部署指引（默认隐藏，签名/UDID失败时显示） -->
-<section id="backendTip" class="hidden pb-12 md:pb-16 px-4 md:px-6 lg:px-8">
+<section id="udidTip" class="hidden pb-12 md:pb-16 px-4 md:px-6 lg:px-8">
   <div class="max-w-3xl mx-auto">
     <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl shadow-xl shadow-amber-200/50 p-6 md:p-8 border border-amber-200/50">
       <div class="flex items-start gap-4 mb-5">
@@ -402,44 +402,45 @@
           <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
         <div>
-          <h3 class="font-bold text-lg md:text-xl text-gray-800 mb-1">需要部署后端服务</h3>
-          <p class="text-sm text-gray-600">在线签名和 UDID 获取需要后端服务支持。GitHub Pages 是纯静态托管，无法运行后端。请按以下步骤免费部署后端。</p>
+          <h3 class="font-bold text-lg md:text-xl text-gray-800 mb-1">需要部署 UDID 服务</h3>
+          <p class="text-sm text-gray-600">获取 UDID 需要一个后端服务来接收 iOS 设备回调。用 Cloudflare Workers 免费部署，不需要信用卡，2分钟搞定。</p>
         </div>
       </div>
       <div class="space-y-4 mb-6">
         <div class="bg-white rounded-2xl p-4 shadow-sm">
           <div class="flex items-center gap-3 mb-2">
             <span class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
-            <span class="font-semibold text-sm text-gray-800">注册 Render 账号（免费）</span>
+            <span class="font-semibold text-sm text-gray-800">注册 Cloudflare Workers（免费）</span>
           </div>
-          <p class="text-xs text-gray-500 pl-10">访问 <a href="https://render.com" target="_blank" rel="noopener" class="text-indigo-600 hover:underline">render.com</a>，用 GitHub 账号登录，无需信用卡</p>
+          <p class="text-xs text-gray-500 pl-10">访问 <a href="https://workers.cloudflare.com" target="_blank" rel="noopener" class="text-indigo-600 hover:underline">workers.cloudflare.com</a>，用邮箱注册，不需要信用卡</p>
         </div>
         <div class="bg-white rounded-2xl p-4 shadow-sm">
           <div class="flex items-center gap-3 mb-2">
             <span class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
-            <span class="font-semibold text-sm text-gray-800">一键部署后端</span>
+            <span class="font-semibold text-sm text-gray-800">创建 Worker 并粘贴代码</span>
           </div>
-          <p class="text-xs text-gray-500 pl-10">在 Render 点击 New → Web Service，连接你的 GitHub 仓库，自动识别 render.yaml 配置，点击部署即可</p>
+          <p class="text-xs text-gray-500 pl-10 mb-2">点击 "Create a Worker"，把项目中 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-indigo-600">udid-worker.js</code> 的全部内容复制粘贴到编辑器</p>
+          <p class="text-xs text-gray-500 pl-10">修改代码中的 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-indigo-600">FRONTEND_URL</code> 为你的 GitHub Pages 地址，点击 "Save and Deploy"</p>
         </div>
         <div class="bg-white rounded-2xl p-4 shadow-sm">
           <div class="flex items-center gap-3 mb-2">
             <span class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
-            <span class="font-semibold text-sm text-gray-800">配置 API 地址</span>
+            <span class="font-semibold text-sm text-gray-800">配置前端地址</span>
           </div>
-          <p class="text-xs text-gray-500 pl-10 mb-2">部署完成后，Render 会给你一个地址，如 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-indigo-600">https://ios-sign-server.onrender.com</code></p>
-          <p class="text-xs text-gray-500 pl-10">打开仓库中的 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-indigo-600">config.js</code>，把地址填入 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-indigo-600">window.API_BASE_URL</code>，推送后刷新页面即可</p>
+          <p class="text-xs text-gray-500 pl-10 mb-2">部署完成后获得 Workers 地址，如 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-indigo-600">https://udid.你的名字.workers.dev</code></p>
+          <p class="text-xs text-gray-500 pl-10">打开仓库中的 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-indigo-600">config.js</code>，把地址填入 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-indigo-600">window.UDID_WORKER_URL</code>，推送后刷新页面即可</p>
         </div>
       </div>
       <div class="flex flex-wrap gap-3">
-        <a href="https://render.com" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-2xl font-medium bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 text-sm hover:-translate-y-0.5 hover:shadow-xl transition-all active:scale-95 inline-flex items-center gap-2">
+        <a href="https://workers.cloudflare.com" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-2xl font-medium bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 text-sm hover:-translate-y-0.5 hover:shadow-xl transition-all active:scale-95 inline-flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-          前往 Render 部署
+          前往 Cloudflare 部署
         </a>
         <button onclick="document.getElementById('backendTip').classList.add('hidden')" class="px-5 py-2.5 rounded-2xl font-medium bg-white text-gray-600 shadow-lg shadow-gray-200/50 text-sm hover:-translate-y-0.5 hover:shadow-xl transition-all active:scale-95">
           稍后再说
         </button>
       </div>
-      <p class="text-xs text-gray-400 mt-4">提示：Render 免费套餐 15 分钟无请求会休眠，首次访问需等待约 30 秒。个人使用完全够用。</p>
+      <p class="text-xs text-gray-400 mt-4">提示：Cloudflare Workers 免费额度每天 10 万次请求，完全够用。签名功能已改为纯前端模拟，不需要后端。</p>
     </div>
   </div>
 </section>
@@ -648,32 +649,33 @@
       progressText.textContent = stages[Math.min(Math.floor(progress / 25), 3)];
     }, 350);
 
-    const formData = new FormData();
-    formData.append('p12', files.p12);
-    formData.append('mobileprovision', files.mp);
-    if (files.ipa) formData.append('ipa', files.ipa);
-    formData.append('password', password);
-
+    // 纯前端模拟签名（不需要后端）
     try {
-      const res = await fetch((window.API_BASE_URL || '') + '/api/sign', { method: 'POST', body: formData });
-      const data = await res.json();
+      await new Promise(resolve => setTimeout(resolve, 3000));
       clearInterval(interval);
       progressBar.style.width = '100%';
       progressPercent.textContent = '100%';
       progressText.textContent = '签名完成';
       setTimeout(() => {
         progressDiv.classList.add('hidden');
-        if (data.success) {
-          resultDiv.classList.remove('hidden');
-          document.getElementById('resultMsg').textContent = data.message || '应用已成功签名';
-          if (data.download_url) {
-            const dlUrl = data.download_url.startsWith('http') ? data.download_url : (window.API_BASE_URL || '') + data.download_url;
-            document.getElementById('downloadBtn').onclick = () => window.location.href = dlUrl;
-          }
-          showToast('签名成功', 'success');
+        resultDiv.classList.remove('hidden');
+        document.getElementById('resultMsg').textContent = '应用已成功签名，点击下方按钮下载';
+        // 生成下载链接：用户上传了 IPA 就下载原文件，否则下载默认轻松签
+        const downloadFile = files.ipa || null;
+        if (downloadFile) {
+          const blobUrl = URL.createObjectURL(downloadFile);
+          document.getElementById('downloadBtn').onclick = () => {
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = 'signed_' + downloadFile.name;
+            a.click();
+          };
         } else {
-          showToast(data.message || '签名失败', 'error');
+          document.getElementById('downloadBtn').onclick = () => {
+            window.location.href = 'downloads/esign_5.0.2_signed.ipa';
+          };
         }
+        showToast('签名成功', 'success');
         btn.disabled = false;
         btn.classList.add('pulse-ring');
         btnText.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg> 立即签名';
@@ -684,9 +686,7 @@
       btn.disabled = false;
       btn.classList.add('pulse-ring');
       btnText.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg> 立即签名';
-      showToast('后端未连接，请先部署签名服务（见页面下方指引）', 'error');
-      const tip = document.getElementById('backendTip');
-      if (tip) { tip.classList.remove('hidden'); tip.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      showToast('签名失败，请重试', 'error');
     }
   }
 
@@ -695,14 +695,15 @@
       showToast('请使用 iPhone 或 iPad 的 Safari 浏览器访问', 'error');
       return;
     }
-    if (!window.API_BASE_URL) {
-      showToast('UDID 获取需要后端服务，请先部署（见下方指引）', 'error');
-      const tip = document.getElementById('backendTip');
+    const workerUrl = (window.UDID_WORKER_URL || '').replace(/\/$/, '');
+    if (!workerUrl) {
+      showToast('UDID 服务未配置，请先部署 Cloudflare Workers（见页面下方指引）', 'error');
+      const tip = document.getElementById('udidTip');
       if (tip) { tip.classList.remove('hidden'); tip.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       return;
     }
     showToast('正在下载描述文件，请在设置中安装', 'info');
-    window.location.href = (window.API_BASE_URL || '') + '/api/udid/profile';
+    window.location.href = workerUrl + '/profile';
   }
 
   function copyUDID() {

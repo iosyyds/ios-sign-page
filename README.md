@@ -1,28 +1,35 @@
 # 轻松签 - iOS 证书自签工具
 
-简单、快速、安全的 iOS 证书自签工具，支持 P12 证书在线签名、IPA 重签、UDID 一键获取，无需电脑，手机端即可完成全部操作。
+简单、快速、安全的 iOS 证书自签工具，支持 P12 证书在线签名、UDID 一键获取，无需电脑，手机端即可完成全部操作。
+
+## 功能特性
+
+- 在线签名：上传 P12 证书 + 描述文件 + IPA，一键签名（纯前端模拟，不需要后端）
+- UDID 获取：通过 Cloudflare Workers 一键获取设备 UDID，无需电脑
+- 安装包下载：内置轻松签 App 安装包，可直接安装
+- 签名教程：详细的图文教程（独立页面）
+- 常见问题：FAQ 问答（独立页面）
+- 微信拦截：检测微信浏览器，提示用户用 Safari 打开
+- 响应式设计：完美适配手机、平板、电脑
 
 ## 架构说明
 
-本项目采用 **前后端分离** 架构：
-
 | 部分 | 部署位置 | 说明 |
 |------|----------|------|
-| 前端页面 | GitHub Pages（免费） | 静态 HTML 页面，用户直接访问 |
-| 后端 API | Render（免费） | Node.js 服务，处理签名、UDID、管理后台 |
-| 数据库 | SQLite（Render 磁盘） | 存储签名记录、设备 UDID |
+| 前端页面 | GitHub Pages（免费） | 静态 HTML，签名功能纯前端模拟 |
+| UDID 服务 | Cloudflare Workers（免费） | 生成描述文件、接收 iOS 回调、返回 UDID |
 
-> **为什么不能只放 GitHub Pages？** GitHub Pages 是纯静态托管，无法运行 Node.js 后端，所以签名和 UDID 功能会 404。必须额外部署一个后端服务。
+> 签名功能为前端模拟（上传后返回原 IPA），如需真正的 IPA 重签名，需要部署 Node.js 后端并安装 zsign 工具（见文末）。
 
 ---
 
-## 快速部署（5分钟完成）
+## 快速部署（5分钟，完全免费）
 
 ### 第一步：上传代码到 GitHub
 
 1. 在 GitHub 创建一个新仓库（如 `ios-sign-page`）
 2. 把本项目所有文件上传到仓库
-3. 确保仓库中有 `render.yaml`、`server.js`、`config.js` 等文件
+3. 确保仓库中有 `udid-worker.js`、`config.js`、`index.html` 等文件
 
 ### 第二步：启用 GitHub Pages（前端）
 
@@ -31,100 +38,34 @@
 3. Branch 选择 `main` / `root`，点击 Save
 4. 等待 1-2 分钟，获得前端地址，如：`https://你的用户名.github.io/ios-sign-page/`
 
-### 第三步：部署后端到 Render（免费）
+### 第三步：部署 UDID 服务到 Cloudflare Workers（免费）
 
-1. 访问 [render.com](https://render.com)，用 GitHub 账号登录（无需信用卡）
-2. 点击右上角 **New +** → **Web Service**
-3. 选择你刚才创建的 GitHub 仓库，点击 **Connect**
-4. Render 会自动识别 `render.yaml` 配置，确认以下信息：
-   - Name: `ios-sign-server`（可自定义）
-   - Region: 选 Oregon（默认）
-   - Branch: `main`
-   - Runtime: `Node`
-   - Build Command: `npm install`
-   - Start Command: `node server.js`
-   - Plan: **Free**（免费）
-5. 点击 **Create Web Service**，等待部署完成（约 2-3 分钟）
-6. 部署成功后，获得后端地址，如：`https://ios-sign-server.onrender.com`
+1. 访问 **[workers.cloudflare.com](https://workers.cloudflare.com)**，用邮箱注册（免费，不需要信用卡）
+2. 登录后点击 **Create a Worker**
+3. 打开本项目中的 `udid-worker.js` 文件，**全选复制**全部内容
+4. 回到 Cloudflare Workers 编辑器，**全选删除**左侧默认代码，**粘贴**你复制的代码
+5. 修改代码中的 `FRONTEND_URL` 为你的 GitHub Pages 地址（第二步获得的地址，末尾不要加 `/`）
+   ```javascript
+   const FRONTEND_URL = 'https://你的用户名.github.io/ios-sign-page';
+   ```
+6. 点击 **Save and Deploy**
+7. 部署成功后，复制 Workers 地址，格式如：`https://udid-getter.你的用户名.workers.dev`
 
-> **注意**：Render 免费套餐 15 分钟无请求会自动休眠，下次首次访问需等待约 30 秒。个人使用完全够用。
-
-### 第四步：配置前端连接后端
+### 第四步：配置前端连接 UDID 服务
 
 1. 打开 GitHub 仓库中的 `config.js` 文件
-2. 把 Render 的后端地址填入：
+2. 把第三步获得的 Workers 地址填入：
    ```javascript
-   window.API_BASE_URL = 'https://ios-sign-server.onrender.com';
+   window.UDID_WORKER_URL = 'https://udid-getter.你的用户名.workers.dev';
    ```
-   （把地址换成你自己的）
 3. 提交更改，等待 GitHub Pages 自动更新（1-2 分钟）
 
 ### 第五步：验证
 
 1. 打开前端地址（GitHub Pages）
-2. 点击「获取 UDID」→ 应该能下载描述文件（不再 404）
-3. 上传证书点击「立即签名」→ 应该能正常提交（不再网络错误）
-4. 访问 `https://你的后端地址/admin` → 管理后台（默认密码 `admin123`）
-
----
-
-## 管理后台
-
-- 地址：`https://你的后端地址/admin`
-- 默认密码：`admin123`
-- 功能：查看签名记录、设备 UDID 列表、统计数据、删除任务
-
-### 修改管理员密码
-
-在 Render 后台 → 你的服务 → Environment → 添加环境变量：
-- Key: `ADMIN_PASSWORD`
-- Value: 你的新密码
-
-保存后重新部署即可。
-
----
-
-## 真实签名（可选）
-
-默认使用模拟签名（返回原 IPA）。要实现真正的 IPA 重签名，需要在 Render 上安装 `zsign` 工具。
-
-由于 Render 免费套餐的构建环境限制，建议：
-1. 升级到 Render 付费套餐（$7/月），或
-2. 部署到自己的 VPS（宝塔面板），参考下方「VPS 部署」
-
-在 VPS 上安装 zsign：
-```bash
-sudo apt-get install g++ make libssl-dev zlib1g-dev
-git clone https://github.com/zhlynn/zsign.git
-cd zsign && sudo make && sudo make install
-```
-
-然后修改 `server.js` 中的 `executeSign` 函数，把模拟代码替换为 zsign 调用（代码中有注释示例）。
-
----
-
-## VPS 部署（备选方案）
-
-如果你有自己的服务器，也可以全部部署在一台服务器上：
-
-```bash
-# 1. 安装 Node.js 18+
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# 2. 上传代码到服务器，安装依赖
-cd /www/wwwroot/sign.yourdomain.com
-npm install
-
-# 3. 用 PM2 启动
-npm install -g pm2
-pm2 start server.js --name "轻松签"
-pm2 save && pm2 startup
-
-# 4. Nginx 反向代理 + SSL 证书（宝塔面板一键配置）
-```
-
-这种方式下 `config.js` 中的 `API_BASE_URL` 留空即可（前后端同域）。
+2. 安装包下载 → 直接可用
+3. 立即签名 → 上传证书后前端模拟签名，完成后可下载
+4. 获取 UDID → 用 iPhone Safari 打开，点击按钮下载描述文件，安装后自动返回显示 UDID
 
 ---
 
@@ -135,47 +76,76 @@ pm2 save && pm2 startup
 | `index.html` | 首页（签名 + UDID + 功能介绍） |
 | `tutorial.html` | 签名教程（独立页面） |
 | `faq.html` | 常见问题（独立页面） |
-| `admin.html` | 管理后台 |
-| `config.js` | **后端 API 地址配置（部署后必须修改）** |
-| `server.js` | Node.js 后端服务 |
-| `render.yaml` | Render 一键部署配置 |
-| `package.json` | 依赖配置 |
+| `config.js` | **配置文件（部署后必须修改 UDID_WORKER_URL）** |
+| `udid-worker.js` | **Cloudflare Workers 脚本（部署 UDID 服务用）** |
 | `assets/` | logo、favicon 等静态资源 |
 | `downloads/` | 轻松签 App 安装包 |
+| `server.js` | Node.js 后端（可选，需要真正签名和管理后台时用） |
+| `admin.html` | 管理后台（可选，需要 server.js 后端） |
+| `render.yaml` | Render 部署配置（可选） |
+
+---
+
+## 关于签名功能
+
+当前版本的签名是**纯前端模拟**：
+- 上传 P12 证书、描述文件、IPA 后，前端显示签名进度动画
+- 3 秒后完成，下载的是你上传的原 IPA（或默认轻松签 IPA）
+- **不会真正修改 IPA 的签名**
+
+这适用于：
+- 测试界面和流程
+- 展示用途
+- 已经通过其他方式签好名，只需要分发
+
+### 如需真正的 IPA 重签名
+
+需要部署 Node.js 后端并安装 zsign 工具：
+1. 部署 `server.js` 到支持 Node.js 的服务器（Render、VPS 等）
+2. 在服务器安装 zsign：`sudo apt-get install g++ make libssl-dev && git clone https://github.com/zhlynn/zsign.git && cd zsign && sudo make install`
+3. 修改 `server.js` 中的 `executeSign` 函数，把模拟代码替换为 zsign 调用（代码中有注释示例）
+4. 在 `config.js` 中填入后端地址：`window.API_BASE_URL = 'https://你的后端地址'`
+
+---
+
+## UDID 获取原理
+
+1. 用户点击「获取 UDID」按钮
+2. Cloudflare Worker 生成一个 iOS 描述文件（mobileconfig）
+3. 用户安装描述文件
+4. iOS 设备把 UDID、型号、系统版本等信息 POST 到 Worker 的回调地址
+5. Worker 解析 UDID，重定向回前端页面，把 UDID 放在 URL 参数中
+6. 前端页面读取 URL 参数，显示 UDID 并提供复制功能
+
+> UDID 获取必须用 iPhone 的 Safari 浏览器，微信内会被拦截提示。必须通过 HTTPS 访问（GitHub Pages 和 Cloudflare Workers 都自动提供 HTTPS）。
 
 ---
 
 ## 常见问题
 
-### Q: 部署后签名还是提示网络错误？
-A: 检查 `config.js` 中的后端地址是否正确，是否带 `https://`，末尾不要加 `/`。然后硬刷新页面（Ctrl+Shift+R）。
+### Q: 部署后 UDID 还是提示未配置？
+A: 检查 `config.js` 中的 `UDID_WORKER_URL` 是否正确填写，是否带 `https://`，末尾不要加 `/`。然后硬刷新页面（Ctrl+Shift+R）。
 
-### Q: UDID 获取点击后没反应？
-A: UDID 获取必须用 iPhone 的 Safari 浏览器，微信内会被拦截提示。且必须通过 HTTPS 访问。
+### Q: UDID 点击后没反应？
+A: 必须用 iPhone 的 Safari 浏览器，微信内会被拦截。且必须通过 HTTPS 访问。
 
-### Q: Render 部署失败怎么办？
-A: 在 Render 后台查看日志，常见原因：
-- Node 版本不兼容 → 在 Environment 中添加 `NODE_VERSION=18.18.0`
-- 依赖安装失败 → 手动在 Shell 中执行 `npm install` 查看错误
+### Q: 签名后下载的 IPA 和原来的一样？
+A: 是的，当前版本是前端模拟签名，不会真正修改 IPA。如需真正签名，见上方「如需真正的 IPA 重签名」。
 
-### Q: 免费套餐够用吗？
-A: 个人使用完全够用。免费套餐有 750 小时/月的运行时间（单实例刚好够一个月），15 分钟无请求休眠。
+### Q: Cloudflare Workers 免费吗？
+A: 完全免费，每天 10 万次请求额度，不需要信用卡。个人使用完全够用。
 
-### Q: 数据会丢失吗？
-A: Render 免费套餐的磁盘是临时的，重启后数据可能丢失。建议：
-- 定期在管理后台导出数据
-- 或升级到付费套餐获得持久化磁盘
+### Q: 管理后台怎么用？
+A: 管理后台（admin.html）需要部署 Node.js 后端（server.js）才能使用。如果你只需要 UDID 和签名功能，不需要管理后台。
 
 ---
 
 ## 技术栈
 
 - 前端：HTML + Tailwind CSS + 原生 JavaScript
-- 后端：Node.js + Express
-- 数据库：SQLite (better-sqlite3)
-- 文件上传：Multer
-- 部署：GitHub Pages + Render
-- 签名工具：zsign（可选，需自行安装）
+- UDID 服务：Cloudflare Workers（JavaScript）
+- 可选后端：Node.js + Express + SQLite
+- 可选签名工具：zsign
 
 ---
 
