@@ -193,7 +193,7 @@
           </div>
           <p class="text-sm text-gray-500 mb-4">iOS 端签名工具安装包 · 7.3 MB · 支持 iOS 11+</p>
           <div class="flex flex-wrap gap-3">
-            <a href="downloads/esign_5.0.2_signed.ipa" download class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm inline-flex items-center gap-2 active:scale-95">
+            <a href="javascript:void(0)" onclick="downloadIPAPackage()" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm inline-flex items-center gap-2 active:scale-95">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               下载安装包
             </a>
@@ -222,11 +222,12 @@
 <section id="sign" class="pb-12 md:pb-16 px-4 md:px-6 lg:px-8 scroll-mt-20">
   <div class="max-w-2xl mx-auto">
     <div class="text-center mb-6 cursor-pointer select-none" onclick="toggleSignForm()">
-      <div class="inline-flex items-center gap-3">
-        <h2 class="font-bold text-2xl md:text-3xl text-gray-800 mb-0">开始签名</h2>
-        <svg id="signChevron" class="w-6 h-6 text-indigo-500 transition-transform duration-300 md:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      <div class="inline-flex items-center gap-3 bg-white rounded-2xl shadow-lg shadow-gray-200/50 px-6 py-3 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
+        <h2 class="font-bold text-xl md:text-3xl text-gray-800 mb-0">开始签名</h2>
+        <svg id="signChevron" class="w-5 h-5 text-indigo-500 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
       </div>
-      <p class="text-sm md:text-base text-gray-500 mt-2">上传证书文件，输入密码，一键完成签名</p>
+      <p class="text-xs text-gray-400 mt-2 md:hidden">点击上方按钮展开签名表单</p>
+      <p class="text-sm md:text-base text-gray-500 mt-2 hidden md:block">上传证书文件，输入密码，一键完成签名</p>
     </div>
     <div id="signFormContent" class="overflow-hidden transition-all duration-300 ease-in-out">
     <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8 relative overflow-hidden">
@@ -472,7 +473,6 @@
         </h4>
         <ul class="text-xs md:text-sm text-gray-500 space-y-2 md:space-y-2.5">
           <li><a href="https://puaaa.cn/shop/10.html" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 transition-colors">购买证书</a></li>
-          <li><a href="admin.html" class="hover:text-indigo-600 transition-colors">管理后台</a></li>
           <li><span class="text-gray-400">版本 5.0.2</span></li>
           <li><span class="text-gray-400">更新 2026-08</span></li>
         </ul>
@@ -578,6 +578,27 @@
       content.style.opacity = '1';
     }
   });
+  // 下载 IPA 安装包（确保文件名正确，避免 GitHub Pages 添加 .html 后缀）
+  function downloadIPAPackage() {
+    showToast('正在下载安装包...', 'info');
+    fetch('downloads/esign_5.0.2_signed.ipa')
+      .then(res => res.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'esign_5.0.2_signed.ipa';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('安装包下载中', 'success');
+      })
+      .catch(() => {
+        // 如果 fetch 失败，直接跳转下载
+        window.location.href = 'downloads/esign_5.0.2_signed.ipa';
+      });
+  }
   const files = { p12: null, mp: null, ipa: null };
 
   function showToast(msg, type = 'info') {
@@ -722,7 +743,7 @@
     }
   }
 
-  function getUDID() {
+  async function getUDID() {
     if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       showToast('请使用 iPhone 或 iPad 的 Safari 浏览器访问', 'error');
       return;
@@ -732,8 +753,28 @@
       showToast('UDID 服务未配置，请联系管理员', 'error');
       return;
     }
+    const btn = event ? event.currentTarget : null;
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 正在连接...';
+    }
+    showToast('正在连接 UDID 服务...', 'info');
+    try {
+      // 健康检查
+      const healthRes = await fetch(workerUrl + '/health', { method: 'GET', timeout: 5000 });
+      if (!healthRes.ok) throw new Error('服务响应异常');
+    } catch (e) {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 获取我的 UDID';
+      }
+      showToast('UDID 服务连接失败，请稍后重试或检查网络', 'error');
+      return;
+    }
     showToast('正在下载描述文件，请在设置中安装', 'info');
-    window.location.href = workerUrl + '/profile';
+    setTimeout(() => {
+      window.location.href = workerUrl + '/profile';
+    }, 500);
   }
 
   function copyUDID() {
