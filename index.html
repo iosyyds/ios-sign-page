@@ -3,282 +3,334 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>全能签官方客户端</title>
+<title>轻松签 - 证书自签工具</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; min-height: 100vh; }
-  .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-  .header { background: #fff; border-radius: 8px; padding: 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  .logo { width: 56px; height: 56px; background: linear-gradient(135deg, #e53935, #b71c1c); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .logo svg { width: 32px; height: 32px; }
-  .header-info h1 { font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
-  .header-info h1 .sep { color: #999; margin: 0 6px; font-weight: 400; }
-  .header-info p { font-size: 13px; color: #888; line-height: 1.5; }
-  .main-card { background: #fff; border-radius: 8px; padding: 40px 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); position: relative; }
-  .device-bar { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 6px; padding: 10px 16px; margin-bottom: 20px; font-size: 13px; color: #2e7d32; display: none; }
-  .device-bar.show { display: block; }
-  .device-bar strong { color: #1b5e20; }
-  .install-btn-wrap { text-align: center; margin-bottom: 28px; }
-  .btn-install { display: inline-flex; align-items: center; gap: 8px; background: #1a1a1a; color: #fff; border: none; padding: 12px 32px; border-radius: 24px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-  .btn-install:hover { background: #333; transform: translateY(-1px); }
-  .btn-install:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  .btn-install .divider { color: #666; margin: 0 4px; }
-  .btn-install .pro { color: #bbb; }
-  .steps-bar { background: #e8f4fd; border-radius: 6px; padding: 14px 20px; text-align: center; margin-bottom: 24px; font-size: 14px; }
-  .steps-bar .label { color: #333; font-weight: 500; }
-  .steps-bar .step1, .steps-bar .step2 { color: #d32f2f; font-weight: 600; }
-  .action-btns { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-  .btn-action { display: inline-flex; align-items: center; gap: 6px; background: #f5f5f5; color: #555; border: 1px solid #ddd; padding: 6px 16px; border-radius: 16px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
-  .btn-action:hover { background: #e8e8e8; border-color: #ccc; }
-  .btn-action .star { color: #888; }
-  .input-section { margin-bottom: 16px; }
-  .udid-input { width: 100%; padding: 12px 16px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: monospace; }
-  .udid-input:focus { border-color: #2196f3; box-shadow: 0 0 0 2px rgba(33,150,243,0.15); }
-  .udid-input::placeholder { color: #aaa; }
-  .code-section { margin-bottom: 20px; display: none; }
-  .code-section.show { display: block; }
-  .code-input { width: 100%; padding: 10px 16px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; text-transform: uppercase; letter-spacing: 2px; }
-  .code-input:focus { border-color: #ff9800; }
-  .code-hint { font-size: 12px; color: #999; margin-top: 6px; }
-  .self-install-wrap { text-align: center; margin-bottom: 32px; }
-  .btn-self { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #1a1a1a; border: 2px solid #1a1a1a; padding: 10px 28px; border-radius: 22px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-  .btn-self:hover { background: #1a1a1a; color: #fff; }
-  .btn-self .divider { color: #999; }
-  .btn-self:hover .divider { color: #666; }
-  .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 12px 24px; border-radius: 6px; font-size: 14px; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; max-width: 90%; text-align: center; }
-  .toast.show { opacity: 1; }
-  .toast.success { background: rgba(46,125,50,0.9); }
-  .toast.error { background: rgba(211,47,47,0.9); }
-  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
-  .modal-overlay.show { display: flex; }
-  .modal { background: #fff; border-radius: 10px; padding: 28px; width: 90%; max-width: 480px; max-height: 85vh; overflow-y: auto; }
-  .modal h3 { font-size: 18px; margin-bottom: 20px; color: #1a1a1a; }
-  .modal .form-group { margin-bottom: 16px; }
-  .modal label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 500; }
-  .modal input[type="text"], .modal input[type="password"] { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; outline: none; }
-  .modal input[type="file"] { width: 100%; padding: 8px; border: 1px dashed #ddd; border-radius: 6px; font-size: 13px; }
-  .modal input:focus { border-color: #2196f3; }
-  .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
-  .btn-primary { flex: 1; padding: 10px; background: #1a1a1a; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
-  .btn-primary:hover { background: #333; }
-  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-  .btn-cancel { flex: 1; padding: 10px; background: #f5f5f5; color: #555; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
-  .btn-cancel:hover { background: #e8e8e8; }
-  .history-list { margin-top: 12px; }
-  .history-item { padding: 10px 12px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; font-size: 13px; }
-  .history-item .row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-  .history-item .app-name { font-weight: 600; color: #1a1a1a; }
-  .history-item .status { font-size: 12px; padding: 2px 8px; border-radius: 10px; }
-  .status.pending { background: #fff3e0; color: #e65100; }
-  .status.processing { background: #e3f2fd; color: #1565c0; }
-  .status.done { background: #e8f5e9; color: #2e7d32; }
-  .status.failed { background: #ffebee; color: #c62828; }
-  .history-item .time { color: #999; font-size: 12px; }
-  .history-empty { text-align: center; color: #999; padding: 20px; font-size: 13px; }
-  .loading { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @media (max-width: 768px) { .container { padding: 10px; } .header { padding: 16px; flex-direction: column; text-align: center; } .main-card { padding: 24px 16px; } .action-btns { gap: 8px; } }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .upload-zone { transition: all 0.3s ease; }
+  .upload-zone.dragover { background: #eef2ff; border-color: #818cf8; transform: scale(1.01); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
-<body>
-<div class="container">
-  <div class="header">
-    <div class="logo">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="#fff"/>
-        <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#fff"/>
-      </svg>
-    </div>
-    <div class="header-info">
-      <h1>全能签<span class="sep">|</span>iOS签名工具</h1>
-      <p>简介：全能签是一款iOS免费的签名工具，可签名安装未上架 App Store 内测应用程序，严禁签名外挂和违规应用。</p>
+<body class="bg-slate-50 text-gray-800 min-h-screen">
+
+<nav class="bg-white/80 backdrop-blur-sm border-0 border-transparent px-4 md:px-6 lg:px-8 py-4 sticky top-0 z-50 shadow-sm">
+  <div class="flex items-center justify-between max-w-6xl mx-auto gap-6 md:gap-8">
+    <a href="/" class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <span class="font-semibold text-xl md:text-2xl text-gray-800">轻松签</span>
+    </a>
+    <div class="hidden md:flex gap-6 md:gap-8 font-normal text-sm text-gray-500">
+      <a href="/" class="hover:text-indigo-600 transition-colors">首页</a>
+      <a href="/" class="text-indigo-600 font-medium">签名</a>
+      <a href="#" class="hover:text-indigo-600 transition-colors">签名教程</a>
+      <a href="#" class="hover:text-indigo-600 transition-colors">常见问题</a>
     </div>
   </div>
-  <div class="main-card">
-    <div class="device-bar" id="deviceBar"><strong>已识别设备：</strong><span id="deviceInfo"></span></div>
-    <div class="install-btn-wrap">
-      <button class="btn-install" id="installBtn" onclick="handleInstall()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-        <span id="installBtnText">立即安装</span>
-        <span class="divider">|</span>
-        <span class="pro">专业版</span>
+</nav>
+
+<section class="py-12 md:py-16 px-4 md:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium mb-6">
+      <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+      版本 5.0.2 · 支持 iOS 11 - iOS 18+
+    </div>
+    <h1 class="font-semibold text-4xl md:text-5xl lg:text-6xl text-gray-800 mb-4 leading-tight">轻松签 · 证书自签</h1>
+    <p class="font-normal text-sm md:text-base text-gray-500 max-w-xl mx-auto mb-8 leading-relaxed">使用自己的 P12 证书在线签名安装，简单、快速、安全</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <button class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm">证书购买</button>
+      <button class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm">定制教程</button>
+      <button class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm">软件源</button>
+      <button class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm">交流群</button>
+    </div>
+  </div>
+</section>
+
+<section class="pb-8 md:pb-12 px-4 md:px-6 lg:px-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8">
+      <div class="flex items-start gap-5">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 flex-shrink-0">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-xl md:text-2xl text-gray-800 mb-1">轻松签 App</h3>
+          <p class="text-sm text-gray-500 mb-3">iOS 端签名工具安装包 · 版本 5.0.2 · 7.3 MB</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="/api/download/esign" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-sm inline-flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              下载安装包
+            </a>
+            <button onclick="showInstallGuide()" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-white text-gray-700 shadow-lg shadow-gray-200/50 text-sm">安装教程</button>
+          </div>
+        </div>
+      </div>
+      <div id="installGuide" class="hidden mt-6 pt-6 border-t border-gray-100">
+        <h4 class="font-semibold text-base text-gray-800 mb-4">安装步骤</h4>
+        <ol class="space-y-3 text-sm text-gray-600">
+          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">1</span><span>用 iPhone 的 Safari 浏览器打开本页面，点击「下载安装包」</span></li>
+          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">2</span><span>弹出「此网站正尝试下载一个配置描述文件」，点击「允许」</span></li>
+          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">3</span><span>下载完成后，到「设置 → 通用 → VPN与设备管理」中安装描述文件</span></li>
+          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">4</span><span>安装完成后，回到桌面即可看到「轻松签」App</span></li>
+          <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">5</span><span>首次打开如提示「未受信任的企业级开发者」，到「设置 → 通用 → VPN与设备管理」中信任证书</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pb-16 md:pb-24 px-4 md:px-6 lg:px-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8">
+      <h2 class="font-semibold text-xl md:text-2xl text-gray-800 mb-2">开始签名</h2>
+      <p class="text-sm text-gray-500 mb-8">上传证书文件，输入密码，一键完成签名</p>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-3">P12 证书文件</label>
+        <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="p12Zone" onclick="document.getElementById('p12Input').click()">
+          <input type="file" id="p12Input" accept=".p12" class="hidden" onchange="handleFileSelect(this, 'p12')">
+          <div id="p12Placeholder">
+            <div class="w-14 h-14 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
+            <p class="text-sm font-medium text-gray-700">点击选择 P12 文件</p>
+            <p class="text-xs text-gray-400 mt-1">支持 .p12 格式</p>
+          </div>
+          <div id="p12Selected" class="hidden">
+            <div class="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+            <p class="text-sm font-medium text-gray-700" id="p12FileName">file.p12</p>
+            <p class="text-xs text-gray-400 mt-1" id="p12FileSize">0 KB</p>
+            <button type="button" class="mt-3 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('p12')">重新选择</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-3">描述文件</label>
+        <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="mpZone" onclick="document.getElementById('mpInput').click()">
+          <input type="file" id="mpInput" accept=".mobileprovision" class="hidden" onchange="handleFileSelect(this, 'mp')">
+          <div id="mpPlaceholder">
+            <div class="w-14 h-14 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+            <p class="text-sm font-medium text-gray-700">点击选择描述文件</p>
+            <p class="text-xs text-gray-400 mt-1">支持 .mobileprovision 格式</p>
+          </div>
+          <div id="mpSelected" class="hidden">
+            <div class="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+            <p class="text-sm font-medium text-gray-700" id="mpFileName">file.mobileprovision</p>
+            <p class="text-xs text-gray-400 mt-1" id="mpFileSize">0 KB</p>
+            <button type="button" class="mt-3 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('mp')">重新选择</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-3">IPA 安装包 <span class="text-gray-400 font-normal ml-1">（选填）</span></label>
+        <div class="upload-zone relative border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-200" id="ipaZone" onclick="document.getElementById('ipaInput').click()">
+          <input type="file" id="ipaInput" accept=".ipa" class="hidden" onchange="handleFileSelect(this, 'ipa')">
+          <div id="ipaPlaceholder">
+            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg></div>
+            <p class="text-sm text-gray-500">点击选择 IPA 文件（可选）</p>
+          </div>
+          <div id="ipaSelected" class="hidden">
+            <div class="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+            <p class="text-sm font-medium text-gray-700" id="ipaFileName">app.ipa</p>
+            <p class="text-xs text-gray-400 mt-1" id="ipaFileSize">0 KB</p>
+            <button type="button" class="mt-2 text-xs text-indigo-600 hover:text-indigo-700 font-medium" onclick="event.stopPropagation(); resetFile('ipa')">重新选择</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <label class="block text-sm font-medium text-gray-700 mb-3">P12 证书密码</label>
+        <input type="password" id="p12Password" class="w-full px-5 py-3.5 bg-gray-50 border-0 rounded-2xl focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all duration-200 text-sm" placeholder="请输入 P12 证书密码">
+      </div>
+
+      <button id="signBtn" onclick="handleSign()" class="w-full px-6 py-4 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 text-base active:scale-95">
+        <span id="signBtnText">立即签名</span>
       </button>
+
+      <div id="signProgress" class="hidden mt-6">
+        <div class="bg-gray-50 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3"><span class="text-sm font-medium text-gray-700" id="progressText">正在签名...</span><span class="text-xs text-gray-400" id="progressPercent">0%</span></div>
+          <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden"><div id="progressBar" class="bg-indigo-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div></div>
+        </div>
+      </div>
+
+      <div id="signResult" class="hidden mt-6">
+        <div class="bg-emerald-50 rounded-2xl p-5 text-center">
+          <div class="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3"><svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+          <h3 class="font-semibold text-lg text-gray-800 mb-1">签名完成</h3>
+          <p class="text-sm text-gray-500 mb-4" id="resultMsg">应用已成功签名</p>
+          <button id="downloadBtn" class="px-6 py-3 rounded-2xl font-medium shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 text-sm">下载签名后的 IPA</button>
+        </div>
+      </div>
     </div>
-    <div class="steps-bar">
-      <span class="label">安装步骤：</span>
-      <span class="step1">第一步【获取设备UDID】</span><br>
-      <span class="step2">第二步【输入兑换码】</span>
-    </div>
-    <div class="action-btns">
-      <button class="btn-action" onclick="handleGetUDID()">获取UDID</button>
-      <button class="btn-action" onclick="handleBuyCode()"><span class="star">★</span>购买证书兑换码<span class="star">★</span></button>
-      <button class="btn-action" onclick="handleHistory()">历史查询</button>
-    </div>
-    <div class="input-section">
-      <input type="text" class="udid-input" id="udidInput" placeholder="请输入安装的设备UDID" maxlength="40">
-    </div>
-    <div class="code-section" id="codeSection">
-      <input type="text" class="code-input" id="codeInput" placeholder="请输入兑换码（选填，专业版需要）" maxlength="32">
-      <div class="code-hint">没有兑换码可直接免费安装，专业版功能需要兑换码</div>
-    </div>
-    <div class="self-install-wrap">
-      <button class="btn-self" onclick="openSelfInstallModal()">我有证书<span class="divider">|</span>自助安装</button>
+
+    <div class="mt-8 bg-indigo-50/50 rounded-2xl p-5">
+      <h4 class="font-semibold text-sm text-indigo-700 mb-2 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>温馨提示</h4>
+      <ul class="text-xs text-indigo-600/80 space-y-1.5 leading-relaxed">
+        <li>· 请确保 P12 证书和描述文件匹配，且描述文件包含目标设备 UDID</li>
+        <li>· 签名过程不会上传你的证书密码到第三方服务器，所有处理均在本地完成</li>
+        <li>· 签名后的 IPA 需要通过 Safari 或 iTunes 安装到 iOS 设备</li>
+      </ul>
     </div>
   </div>
-</div>
+</section>
 
-<div class="modal-overlay" id="selfInstallModal">
-  <div class="modal">
-    <h3>自助安装 - 上传证书</h3>
-    <div class="form-group"><label>设备UDID</label><input type="text" id="selfUdid" placeholder="请输入设备UDID"></div>
-    <div class="form-group"><label>证书名称（选填）</label><input type="text" id="selfCertName" placeholder="例如：我的开发者证书"></div>
-    <div class="form-group"><label>P12证书文件（.p12）*</label><input type="file" id="selfP12" accept=".p12"></div>
-    <div class="form-group"><label>描述文件（.mobileprovision）*</label><input type="file" id="selfMp" accept=".mobileprovision"></div>
-    <div class="form-group"><label>IPA安装包（选填）</label><input type="file" id="selfIpa" accept=".ipa"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeSelfInstallModal()">取消</button>
-      <button class="btn-primary" id="selfSubmitBtn" onclick="handleSelfInstall()">开始签名</button>
+<footer class="bg-white text-gray-600 py-12 md:py-16 px-4 md:px-6 lg:px-8 border-t border-gray-100">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+          <span class="font-semibold text-lg text-gray-800">轻松签</span>
+        </div>
+        <p class="text-xs text-gray-400 leading-relaxed">简单、快速、安全的 iOS 证书自签工具</p>
+      </div>
+      <div>
+        <h4 class="font-semibold text-base text-gray-800 mb-3">快速链接</h4>
+        <ul class="text-xs text-gray-500 space-y-2">
+          <li><a href="#" class="hover:text-indigo-600 transition-colors">签名教程</a></li>
+          <li><a href="#" class="hover:text-indigo-600 transition-colors">常见问题</a></li>
+          <li><a href="#" class="hover:text-indigo-600 transition-colors">证书购买</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-base text-gray-800 mb-3">关于</h4>
+        <ul class="text-xs text-gray-500 space-y-2">
+          <li><a href="/admin" class="hover:text-indigo-600 transition-colors">管理后台</a></li>
+          <li><span class="text-gray-400">版本 5.0.2</span></li>
+        </ul>
+      </div>
     </div>
+    <div class="mt-10 pt-6 border-t border-gray-100 text-center text-xs text-gray-400">© 2024 轻松签. 仅供学习交流使用</div>
   </div>
-</div>
+</footer>
 
-<div class="modal-overlay" id="historyModal">
-  <div class="modal">
-    <h3>安装记录查询</h3>
-    <div class="form-group"><label>设备UDID</label><input type="text" id="historyUdid" placeholder="请输入设备UDID查询"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeHistoryModal()">关闭</button>
-      <button class="btn-primary" onclick="queryHistory()">查询</button>
-    </div>
-    <div class="history-list" id="historyList" style="margin-top:16px;"></div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="buyModal">
-  <div class="modal">
-    <h3>购买证书兑换码</h3>
-    <p style="font-size:14px;color:#666;line-height:1.8;margin-bottom:16px;">兑换码用于解锁专业版功能，支持更多应用签名和更长有效期。<br><br>请联系管理员获取兑换码，或在管理后台自行生成。</p>
-    <div class="form-group"><label>已有兑换码？直接输入</label><input type="text" id="buyCodeInput" placeholder="输入兑换码后点击使用" style="text-transform:uppercase;letter-spacing:2px;"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeBuyModal()">关闭</button>
-      <button class="btn-primary" onclick="useBuyCode()">使用兑换码</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl text-white text-sm shadow-xl z-50 opacity-0 transition-opacity duration-300 pointer-events-none max-w-xs text-center"></div>
 
 <script>
-  const API = '';
-  function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 2500); }
-  function getUDID() { return document.getElementById('udidInput').value.trim(); }
-  function setLoading(btn, text, loading = true) { if (loading) { btn.disabled = true; btn.innerHTML = '<span class="loading"></span> ' + text; } else { btn.disabled = false; } }
+  const files = { p12: null, mp: null, ipa: null };
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    const urlUdid = params.get('udid');
-    if (urlUdid) { document.getElementById('udidInput').value = urlUdid; checkDevice(urlUdid); history.replaceState({}, '', window.location.pathname); }
-    document.getElementById('udidInput').addEventListener('input', function() {
-      const codeSection = document.getElementById('codeSection');
-      if (this.value.trim().length > 5) codeSection.classList.add('show'); else codeSection.classList.remove('show');
+  function showToast(msg, type = 'info') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `fixed top-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl text-white text-sm shadow-xl z-50 opacity-100 transition-opacity duration-300 pointer-events-none max-w-xs text-center ${type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-emerald-500' : 'bg-gray-800'}`;
+    setTimeout(() => t.classList.replace('opacity-100', 'opacity-0'), 2500);
+  }
+
+  function showInstallGuide() {
+    const guide = document.getElementById('installGuide');
+    guide.classList.toggle('hidden');
+    if (!guide.classList.contains('hidden')) guide.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function handleFileSelect(input, type) {
+    const file = input.files[0];
+    if (!file) return;
+    files[type] = file;
+    document.getElementById(type + 'Placeholder').classList.add('hidden');
+    document.getElementById(type + 'Selected').classList.remove('hidden');
+    document.getElementById(type + 'FileName').textContent = file.name;
+    document.getElementById(type + 'FileSize').textContent = formatSize(file.size);
+  }
+
+  function resetFile(type) {
+    files[type] = null;
+    document.getElementById(type + 'Input').value = '';
+    document.getElementById(type + 'Placeholder').classList.remove('hidden');
+    document.getElementById(type + 'Selected').classList.add('hidden');
+  }
+
+  ['p12', 'mp', 'ipa'].forEach(type => {
+    const zone = document.getElementById(type + 'Zone');
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const input = document.getElementById(type + 'Input');
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        handleFileSelect(input, type);
+      }
     });
-    document.getElementById('udidInput').addEventListener('keypress', e => { if (e.key === 'Enter') handleInstall(); });
   });
 
-  async function checkDevice(udid) {
+  async function handleSign() {
+    if (!files.p12) return showToast('请选择 P12 证书文件', 'error');
+    if (!files.mp) return showToast('请选择描述文件', 'error');
+    const password = document.getElementById('p12Password').value;
+    if (!password) return showToast('请输入 P12 证书密码', 'error');
+
+    const btn = document.getElementById('signBtn');
+    const btnText = document.getElementById('signBtnText');
+    const progressDiv = document.getElementById('signProgress');
+    const resultDiv = document.getElementById('signResult');
+
+    btn.disabled = true;
+    btnText.textContent = '签名中...';
+    progressDiv.classList.remove('hidden');
+    resultDiv.classList.add('hidden');
+
+    let progress = 0;
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
+    const stages = ['正在验证证书...', '正在解析描述文件...', '正在重签名应用...', '正在完成签名...'];
+
+    const interval = setInterval(() => {
+      progress += Math.random() * 15 + 5;
+      if (progress > 95) progress = 95;
+      progressBar.style.width = progress + '%';
+      progressPercent.textContent = Math.floor(progress) + '%';
+      progressText.textContent = stages[Math.min(Math.floor(progress / 25), 3)];
+    }, 400);
+
+    const formData = new FormData();
+    formData.append('p12', files.p12);
+    formData.append('mobileprovision', files.mp);
+    if (files.ipa) formData.append('ipa', files.ipa);
+    formData.append('password', password);
+
     try {
-      const res = await fetch(`${API}/api/udid/check?udid=${encodeURIComponent(udid)}`);
+      const res = await fetch('/api/sign', { method: 'POST', body: formData });
       const data = await res.json();
-      if (data.success && data.exists) {
-        const d = data.device;
-        const info = `${d.udid.substring(0,8)}...${d.udid.substring(d.udid.length-4)}` + (d.product ? ` · ${d.product}` : '') + (d.model ? ` · ${d.model}` : '');
-        document.getElementById('deviceInfo').textContent = info;
-        document.getElementById('deviceBar').classList.add('show');
-      }
-    } catch(e) { console.error(e); }
-  }
-
-  function handleGetUDID() { showToast('正在下载描述文件，请用Safari打开并安装...', 'success'); setTimeout(() => { window.location.href = `${API}/api/udid/profile`; }, 800); }
-  function handleBuyCode() { document.getElementById('buyModal').classList.add('show'); }
-  function closeBuyModal() { document.getElementById('buyModal').classList.remove('show'); }
-
-  async function useBuyCode() {
-    const code = document.getElementById('buyCodeInput').value.trim();
-    const udid = getUDID();
-    if (!code) return showToast('请输入兑换码', 'error');
-    if (!udid) return showToast('请先输入设备UDID', 'error');
-    try {
-      const res = await fetch(`${API}/api/code/use`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, udid, app_name: '专业版应用' }) });
-      const data = await res.json();
-      if (data.success) { showToast(data.message, 'success'); closeBuyModal(); document.getElementById('codeInput').value = code; }
-      else showToast(data.message, 'error');
-    } catch(e) { showToast('网络错误，请重试', 'error'); }
-  }
-
-  function handleHistory() { const udid = getUDID(); if (udid) document.getElementById('historyUdid').value = udid; document.getElementById('historyModal').classList.add('show'); if (udid) queryHistory(); }
-  function closeHistoryModal() { document.getElementById('historyModal').classList.remove('show'); }
-
-  async function queryHistory() {
-    const udid = document.getElementById('historyUdid').value.trim();
-    if (!udid) return showToast('请输入UDID', 'error');
-    const list = document.getElementById('historyList');
-    list.innerHTML = '<div style="text-align:center;padding:16px;color:#999;">查询中...</div>';
-    try {
-      const res = await fetch(`${API}/api/history?udid=${encodeURIComponent(udid)}`);
-      const data = await res.json();
-      if (data.success && data.records.length > 0) {
-        list.innerHTML = data.records.map(r => `<div class="history-item"><div class="row"><span class="app-name">${r.app_name || '未命名应用'}</span><span class="status ${r.status}">${statusText(r.status)}</span></div><div class="row"><span class="time">${r.created_at}</span><span class="time" style="color:#aaa;">${r.code ? '兑换码: ' + r.code : '免费安装'}</span></div></div>`).join('');
-      } else list.innerHTML = '<div class="history-empty">暂无安装记录</div>';
-    } catch(e) { list.innerHTML = '<div class="history-empty">查询失败，请重试</div>'; }
-  }
-  function statusText(s) { const map = { pending: '等待中', processing: '处理中', done: '已完成', failed: '失败' }; return map[s] || s; }
-
-  async function handleInstall() {
-    const udid = getUDID();
-    const code = document.getElementById('codeInput').value.trim();
-    const btn = document.getElementById('installBtn');
-    if (!udid) return showToast('请先输入设备UDID', 'error');
-    setLoading(btn, '安装中...', true);
-    try {
-      const res = await fetch(`${API}/api/install`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ udid, code }) });
-      const data = await res.json();
-      if (data.success) { showToast(data.message, 'success'); checkDevice(udid); }
-      else showToast(data.message, 'error');
-    } catch(e) { showToast('网络错误，请确认服务已启动', 'error'); }
-    finally {
-      setLoading(btn, '', false);
-      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span id="installBtnText">立即安装</span><span class="divider">|</span><span class="pro">专业版</span>`;
+      clearInterval(interval);
+      progressBar.style.width = '100%';
+      progressPercent.textContent = '100%';
+      progressText.textContent = '签名完成';
+      setTimeout(() => {
+        progressDiv.classList.add('hidden');
+        if (data.success) {
+          resultDiv.classList.remove('hidden');
+          document.getElementById('resultMsg').textContent = data.message || '应用已成功签名';
+          if (data.download_url) document.getElementById('downloadBtn').onclick = () => window.location.href = data.download_url;
+          showToast('签名成功', 'success');
+        } else {
+          showToast(data.message || '签名失败', 'error');
+        }
+        btn.disabled = false;
+        btnText.textContent = '立即签名';
+      }, 500);
+    } catch (e) {
+      clearInterval(interval);
+      progressDiv.classList.add('hidden');
+      btn.disabled = false;
+      btnText.textContent = '立即签名';
+      showToast('网络错误，请确认服务已启动', 'error');
     }
   }
-
-  function openSelfInstallModal() { const udid = getUDID(); if (udid) document.getElementById('selfUdid').value = udid; document.getElementById('selfInstallModal').classList.add('show'); }
-  function closeSelfInstallModal() { document.getElementById('selfInstallModal').classList.remove('show'); }
-
-  async function handleSelfInstall() {
-    const udid = document.getElementById('selfUdid').value.trim();
-    const certName = document.getElementById('selfCertName').value.trim();
-    const p12 = document.getElementById('selfP12').files[0];
-    const mp = document.getElementById('selfMp').files[0];
-    const ipa = document.getElementById('selfIpa').files[0];
-    const btn = document.getElementById('selfSubmitBtn');
-    if (!udid) return showToast('请输入设备UDID', 'error');
-    if (!p12) return showToast('请上传P12证书', 'error');
-    if (!mp) return showToast('请上传描述文件', 'error');
-    const formData = new FormData();
-    formData.append('udid', udid); formData.append('cert_name', certName);
-    formData.append('p12', p12); formData.append('mobileprovision', mp);
-    if (ipa) formData.append('ipa', ipa);
-    setLoading(btn, '签名中...', true);
-    try {
-      const res = await fetch(`${API}/api/self-install`, { method: 'POST', body: formData });
-      const data = await res.json();
-      if (data.success) { showToast(data.message, 'success'); closeSelfInstallModal(); checkDevice(udid); }
-      else showToast(data.message, 'error');
-    } catch(e) { showToast('上传失败，请确认服务已启动', 'error'); }
-    finally { setLoading(btn, '', false); btn.textContent = '开始签名'; }
-  }
-
-  document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); }); });
 </script>
+
 </body>
 </html>
