@@ -9,6 +9,7 @@
   body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
+<script src="config.js"></script>
 </head>
 <body class="bg-slate-50 text-gray-800 min-h-screen">
 
@@ -150,7 +151,7 @@
     const pwd = document.getElementById('passwordInput').value;
     if (!pwd) return showToast('请输入密码', 'error');
     try {
-      const res = await fetch(`/api/admin/stats?password=${encodeURIComponent(pwd)}`);
+      const res = await fetch(`${window.API_BASE_URL || ''}/api/admin/stats?password=${encodeURIComponent(pwd)}`);
       const data = await res.json();
       if (data.success) {
         adminPassword = pwd;
@@ -192,7 +193,7 @@
 
   async function loadStats() {
     try {
-      const res = await fetch(`/api/admin/stats?password=${encodeURIComponent(adminPassword)}`);
+      const res = await fetch(`${window.API_BASE_URL || ''}/api/admin/stats?password=${encodeURIComponent(adminPassword)}`);
       const data = await res.json();
       if (data.success) {
         const s = data.stats;
@@ -228,7 +229,7 @@
 
   async function loadTasks() {
     try {
-      const res = await fetch(`/api/admin/tasks?password=${encodeURIComponent(adminPassword)}`);
+      const res = await fetch(`${window.API_BASE_URL || ''}/api/admin/tasks?password=${encodeURIComponent(adminPassword)}`);
       const data = await res.json();
       const tbody = document.getElementById('tasksBody');
       if (data.success && data.tasks.length > 0) {
@@ -240,7 +241,7 @@
             <td class="py-3.5 text-xs text-gray-400 hidden md:table-cell">${t.p12_file || '-'}</td>
             <td class="py-3.5 text-xs text-gray-400 hidden md:table-cell">${t.created_at}</td>
             <td class="py-3.5">
-              ${t.status === 'done' ? `<a href="/api/sign/download/${t.task_id}" class="text-indigo-600 hover:text-indigo-700 text-xs font-medium mr-3">下载</a>` : ''}
+              ${t.status === 'done' ? `<a href="${window.API_BASE_URL || ''}/api/sign/download/${t.task_id}" class="text-indigo-600 hover:text-indigo-700 text-xs font-medium mr-3">下载</a>` : ''}
               <button onclick="deleteTask(${t.id})" class="text-red-500 hover:text-red-600 text-xs font-medium">删除</button>
             </td>
           </tr>
@@ -254,7 +255,7 @@
   async function deleteTask(id) {
     if (!confirm('确定删除此任务？')) return;
     try {
-      const res = await fetch(`/api/admin/tasks/${id}?password=${encodeURIComponent(adminPassword)}`, { method: 'DELETE' });
+      const res = await fetch(`${window.API_BASE_URL || ''}/api/admin/tasks/${id}?password=${encodeURIComponent(adminPassword)}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
         showToast('删除成功', 'success');
@@ -268,7 +269,7 @@
 
   async function loadDevices() {
     try {
-      const res = await fetch(`/api/admin/devices?password=${encodeURIComponent(adminPassword)}`);
+      const res = await fetch(`${window.API_BASE_URL || ''}/api/admin/devices?password=${encodeURIComponent(adminPassword)}`);
       const data = await res.json();
       const tbody = document.getElementById('devicesBody');
       if (data.success && data.devices.length > 0) {
