@@ -631,45 +631,20 @@
       content.style.opacity = '1';
     }
   });
-  // 下载 IPA 安装包（用 jsDelivr CDN 避免 GitHub Pages 的 MIME 类型问题）
+  // 下载 IPA 安装包（直接跳转，避免 fetch 跨域问题）
   function downloadIPAPackage() {
-    showToast('正在下载安装包...', 'info');
-    // 多个下载源，自动降级
-    const urls = [
-      'downloads/esign_5.0.2_signed.ipa',  // 相对路径（GitHub Pages）
-      'https://ghproxy.com/https://github.com/iosyyds/ios-sign-page/raw/main/downloads/esign_5.0.2_signed.ipa',  // 国内加速
-      'https://mirror.ghproxy.com/https://github.com/iosyyds/ios-sign-page/raw/main/downloads/esign_5.0.2_signed.ipa',  // 国内加速备用
-      'https://cdn.jsdelivr.net/gh/iosyyds/ios-sign-page@main/downloads/esign_5.0.2_signed.ipa',
-      'https://raw.githubusercontent.com/iosyyds/ios-sign-page/main/downloads/esign_5.0.2_signed.ipa'
-    ];
-    let urlIndex = 0;
-    function tryDownload() {
-      if (urlIndex >= urls.length) {
-        showToast('下载失败，请检查网络后重试', 'error');
-        return;
-      }
-      fetch(urls[urlIndex])
-        .then(res => {
-          if (!res.ok) throw new Error('下载失败');
-          return res.blob();
-        })
-        .then(blob => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'esign_5.0.2_signed.ipa';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          showToast('安装包下载中', 'success');
-        })
-        .catch(() => {
-          urlIndex++;
-          tryDownload();
-        });
-    }
-    tryDownload();
+    showToast('正在跳转下载...', 'info');
+    const downloadUrl = 'https://ghproxy.com/https://github.com/iosyyds/ios-sign-page/raw/main/downloads/esign_5.0.2_signed.ipa';
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = 'esign_5.0.2_signed.ipa';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => {
+      showToast('如果没有自动下载，请在新页面中点击下载', 'info');
+    }, 1000);
   }
   const files = { p12: null, mp: null, ipa: null };
 
@@ -810,10 +785,8 @@
           downloadBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg> 立即安装到 iPhone';
           const plistUrls = [
             'install.plist',
-            'https://ghproxy.com/https://github.com/iosyyds/ios-sign-page/raw/main/install.plist',
-            'https://mirror.ghproxy.com/https://github.com/iosyyds/ios-sign-page/raw/main/install.plist',
             'https://cdn.jsdelivr.net/gh/iosyyds/ios-sign-page@main/install.plist',
-            'https://raw.githubusercontent.com/iosyyds/ios-sign-page/main/install.plist'
+            'https://ghproxy.com/https://github.com/iosyyds/ios-sign-page/raw/main/install.plist'
           ];
           downloadBtn.onclick = () => {
             // 用第一个可用的 plist URL
